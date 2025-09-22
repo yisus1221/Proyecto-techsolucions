@@ -16,11 +16,10 @@ Este repositorio contiene una implementación base y la documentación de un **s
 9. [Estructuras de datos aplicadas](#estructuras-de-datos-aplicadas)  
 10. [Requisitos Funcionales (RF01–RF09)](#requisitos-funcionales-rf)  
 11. [Objetivos de aprendizaje alcanzados](#objetivos-de-aprendizaje-alcanzados)  
-12. [Cómo ejecutar (local)](#cómo-ejecutar-local)  
-13. [Cómo publicar en GitHub](#cómo-publicar-en-github-rápido)  
-14. [Bibliografía](#bibliografía-selección)  
-15. [Autores](#autores-del-entregable-original)  
-16. [Licencia](#licencia)  
+12. [Cómo ejecutar (local)](#cómo-ejecutar-local)   
+13. [Bibliografía](#bibliografía-selección)  
+14. [Autores](#autores-del-entregable-original)  
+15. [Licencia](#licencia)  
 
 
 
