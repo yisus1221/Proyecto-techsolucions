@@ -112,20 +112,21 @@ techsolutions-presentacion-github/
 ```
 
 > El contenido base de este README se adaptó desde la presentación original del proyecto del curso. Consulta el documento fuente en la carpeta de la entrega para más detalles.
-
+---
 ### Estructuras de Datos aplicadas
 - **PriorityQueue**: `O(log n)` en inserción/poll, `O(1)` peek.
 - **List**: recorrido `O(n)`; índice `O(1)`.
 - **HashMap**: `O(1)` promedio en búsqueda/inserción.
 - **Grafo**: recorrido `O(V+E)` (DFS para ciclos/dependencias).
 - **Árbol Binario** para empleados.
-
+---
 ### Requisitos Funcionales (RF)
 RF01–RF09: registro y clasificación de tareas, búsqueda por ID, empleados en árbol binario, dependencias en grafo y persistencia MongoDB.
-
+---
 ### Objetivos de Aprendizaje alcanzados
 Entorno listo con Maven, conexión a `mongodb://localhost:27017` (BD `techsolutions`), patrones POO/DAO, UI Swing funcional, y verificación con Compass. Diagramas UML y flujo UI ↔ BD verificados.
 
+---
 
 ## Cómo ejecutar (local)
 
