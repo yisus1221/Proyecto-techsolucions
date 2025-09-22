@@ -3,7 +3,7 @@
 > Universidad: TecMilenio · Materia: **Estructuras de Datos** · Profesora: **Blanca Aracely Aranda Machorro** · Ubicación: **Monterrey, Nuevo León**
 
 Este repositorio contiene una implementación base y la documentación de un **sistema de gestión de tareas** para *TechSolutions S.A. de C.V.* construido en **Java 17**, **Swing**, **MongoDB** y **Maven**. Incluye estructuras de datos (Stack, Queue, PriorityQueue, HashMap, árbol binario y grafo de dependencias) y una organización por capas usando **MVC** + **DAO**.
-## 📑 Índice
+##  Índice
 
 1. [Caso de Estudio](#caso-de-estudio)  
 2. [Problemática identificada](#problemática-identificada)  
@@ -149,18 +149,7 @@ mvn -q exec:java -Dexec.mainClass="com.techsolutions.Main"
 - `MONGODB_URI` (por defecto `mongodb://localhost:27017`)
 - `MONGO_DB_NAME` (por defecto `techsolutions`)
 
-## Cómo publicar en GitHub (rápido)
-
-```bash
-git init
-git add .
-git commit -m "Proyecto base: TechSolutions Gestion de Tareas"
-git branch -M main
-git remote add origin https://github.com/<tu-usuario>/<tu-repo>.git
-git push -u origin main
-```
-
-> Si no tienes repo creado, primero crea uno vacío en GitHub con el mismo nombre que prefieras y luego ejecuta los comandos anteriores (reemplaza `<tu-usuario>/<tu-repo>`).
+---
 
 ## Bibliografía (selección)
 - Oracle. *Java SE Docs*.  
@@ -174,10 +163,10 @@ git push -u origin main
 ---
 
 ## Autores (del entregable original)
-- Jesus David Marroquin Peña (AL07101520)  
-- Mauricio Sanchez Figueroa (AL07098275)  
-- Juan Porfirio Torres Rojas (AL07099471)  
-- Ian Carlos Martinez Diaz (AL03003400)
+
+<img width="274" height="317" alt="image" src="https://github.com/user-attachments/assets/ef05a6ac-df81-4505-897b-c85b1fe46c2f" />
+
+
 
 ## Licencia
 MIT
