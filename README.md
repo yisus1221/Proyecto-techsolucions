@@ -81,30 +81,32 @@ techsolutions-presentacion-github/
 ├─ LICENSE
 ├─ pom.xml
 ├─ README.md
-└─ src/
-   └─ main/java/com/techsolutions/
-      ├─ Main.java
-      ├─ controller/
-      │  └─ SistemaGestionTareas.java
-      ├─ dao/
-      │  ├─ MongoConnection.java
-      │  ├─ TareaDAO.java
-      │  └─ EmpleadoDAO.java
-      ├─ model/
-      │  ├─ Tarea.java
-      │  ├─ TareaPrioridad.java
-      │  ├─ Empleado.java
-      │  └─ DependenciasGrafo.java
-      ├─ estructuras/
-      │  ├─ ArbolEmpleados.java
-      │  └─ EstructurasAuxiliares.java
-      └─ gui/
-         ├─ MainFrame.java
-         ├─ TabUrgentes.java
-         ├─ TabProgramadas.java
-         ├─ TabDepartamento.java
-         ├─ TabPrioridad.java
-         └─ TabEmpleados.java
+├─ src/
+    └── main/java/com/techsolutions/
+        ├── db/
+        │   └── MongoDBManager.java          // Conexión directa a MongoDB
+        │
+        ├── gui/
+        │   └── PanelPila.java               // Interfaz Swing para mostrar Pila
+        │
+        ├── model/
+        │   ├── ArbolEmpleados.java          // Árbol binario / AVL de empleados
+        │   ├── Empleado.java                // Entidad empleado
+        │   ├── Tarea.java                   // Entidad tarea
+        │   └── TareaPrioridad.java          // Extiende tarea con prioridad
+        │
+        ├── services/
+        │   └── MongoDBService.java          // Lógica de negocio sobre la DB
+        │
+        ├── util/
+        │   ├── GrafoTareas.java             // Grafo para dependencias entre tareas
+        │   └── Utilidades.java              // Métodos de ayuda (validaciones, etc.)
+        │
+        ├── utils/
+        │   └── PruebaConexionMongoDB.java   // Clase de prueba de conexión DB
+        │
+        ├── DatosPredeterminados.java        // Semilla de datos iniciales
+        └── SistemaGestionTareas.java        // Clase principal (main)
 ```
 
 > El contenido base de este README se adaptó desde la presentación original del proyecto del curso. Consulta el documento fuente en la carpeta de la entrega para más detalles.
