@@ -1,0 +1,30 @@
+@startuml
+title Diagrama de Flujo Compacto - SGT
+start
+:Iniciar app / inicializar estructuras / conectar MongoDB;
+:Configurar UI y cargar datos;
+
+repeat
+  :Usuario selecciona acción (Crear / Ver / Eliminar / Actualizar / Cerrar);
+  if (Crear?) then (sí)
+    :Generar ID, crear Tarea, agregar a estructura y guardar en MongoDB;
+  else
+    if (Ver?) then (sí)
+      :Mostrar detalles / búsqueda por ID;
+    else
+      if (Eliminar?) then (sí)
+        :Eliminar de estructura y de MongoDB;
+      else
+        if (Actualizar?) then (sí)
+          :Editar en memoria y actualizar en MongoDB;
+        else
+          :Usuario cierra la interacción;
+        endif
+      endif
+    endif
+  endif
+repeat while (Usuario desea continuar)
+
+:Cerrar conexión MongoDB;
+stop
+@enduml
