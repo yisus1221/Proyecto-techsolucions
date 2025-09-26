@@ -56,7 +56,22 @@ Una aplicación Java (consola/GUI) que gestiona tareas departamentales con **cli
 - **Estructuras de Datos**: Stack, LinkedList, PriorityQueue, HashMap
 - **Patrones**: MVC, DAO, Singleton
 ---
+## Alcance
+- Registro/gestión de tareas: ID, descripción, urgencia, fecha límite, departamento.
+- Clasificación por estructuras: **Pila** (urgentes), **Cola** (programadas), **Lista** (por departamento), **Cola de Prioridad** (prioridad + fecha).
+- Persistencia (CRUD) en MongoDB.
+- Reportes básicos y estadísticas simples.
+---
+## Roles del Sistema
+- **Empleado**: registra/consulta sus tareas.
+- **Líder de Departamento**: consulta todas las tareas del área y ajusta prioridades.
+- **Administrador**: CRUD global de tareas/empleados y configuración de BD.
+- **Cliente VIP**: seguimiento prioritario (solo consumo).
+---
+## Beneficios
+Priorización automática, visibilidad de dependencias/jerarquías, búsquedas rápidas, trazabilidad y persistencia de datos.
 
+---
 ## 📌 Diagrama de Casos de Uso - Sistema de Gestión de Tareas
 
 ```mermaid
