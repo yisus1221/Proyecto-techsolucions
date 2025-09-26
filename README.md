@@ -56,22 +56,96 @@ Una aplicación Java (consola/GUI) que gestiona tareas departamentales con **cli
 - **Estructuras de Datos**: Stack, LinkedList, PriorityQueue, HashMap
 - **Patrones**: MVC, DAO, Singleton
 ---
-## Alcance
-- Registro/gestión de tareas: ID, descripción, urgencia, fecha límite, departamento.
-- Clasificación por estructuras: **Pila** (urgentes), **Cola** (programadas), **Lista** (por departamento), **Cola de Prioridad** (prioridad + fecha).
-- Persistencia (CRUD) en MongoDB.
-- Reportes básicos y estadísticas simples.
----
-## Roles del Sistema
-- **Empleado**: registra/consulta sus tareas.
-- **Líder de Departamento**: consulta todas las tareas del área y ajusta prioridades.
-- **Administrador**: CRUD global de tareas/empleados y configuración de BD.
-- **Cliente VIP**: seguimiento prioritario (solo consumo).
----
-## Beneficios
-Priorización automática, visibilidad de dependencias/jerarquías, búsquedas rápidas, trazabilidad y persistencia de datos.
 
----
+# 📌 Diagrama de Casos de Uso - Sistema de Gestión de Tareas
+
+```mermaid
+flowchart LR
+    %% Actores
+    U[👤 Usuario]
+    A[🛠️ Administrador]
+
+    %% Casos de uso Usuario
+    CU1((Crear Tarea))
+    CU2((Asignar Tarea))
+    CU3((Ver Tareas))
+    CU4((Actualizar Tarea))
+    CU5((Eliminar Tarea))
+    CU6((Detectar Ciclos))
+    CU7((Orden Topológico))
+    CU8((Reconectar MongoDB))
+
+    %% Casos de uso Administrador
+    CA1((Insertar Empleado))
+    CA2((Eliminar Empleado))
+
+    %% Relaciones Usuario
+    U --> CU1
+    U --> CU2
+    U --> CU3
+    U --> CU4
+    U --> CU5
+    U --> CU6
+    U --> CU7
+    U --> CU8
+
+    %% Relaciones Administrador
+    A --> CA1
+    A --> CA2
+
+    %% Agrupar en sistema
+    subgraph Sistema["Sistema de Gestión de Tareas"]
+        CU1
+        CU2
+        CU3
+        CU4
+        CU5
+        CU6
+        CU7
+        CU8
+        CA1
+        CA2
+    end
+```
+# 📌 Diagrama de Flujo  - SGT
+
+```mermaid
+flowchart TD
+    %% Inicio
+    A([Inicio]) --> B[Iniciar app / inicializar estructuras / conectar MongoDB]
+    B --> C[Configurar UI y cargar datos]
+
+    %% Ciclo principal
+    C --> D{Usuario selecciona acción}
+
+    %% Crear
+    D -->|Crear| E[Generar ID, crear Tarea, agregar a estructura y guardar en MongoDB]
+
+    %% Ver
+    D -->|Ver| F[Mostrar detalles / búsqueda por ID]
+
+    %% Eliminar
+    D -->|Eliminar| G[Eliminar de estructura y de MongoDB]
+
+    %% Actualizar
+    D -->|Actualizar| H[Editar en memoria y actualizar en MongoDB]
+
+    %% Cerrar
+    D -->|Cerrar| I[Usuario cierra la interacción]
+
+    %% Bucle
+    E --> J{¿Continuar?}
+    F --> J
+    G --> J
+    H --> J
+    I --> J
+
+    J -->|Sí| D
+    J -->|No| K[Cerrar conexión MongoDB]
+
+    %% Fin
+    K --> L([Fin])
+```
 
 ## Estructura del proyecto
 
