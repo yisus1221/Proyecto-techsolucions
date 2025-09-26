@@ -57,7 +57,7 @@ Una aplicación Java (consola/GUI) que gestiona tareas departamentales con **cli
 - **Patrones**: MVC, DAO, Singleton
 ---
 
-# 📌 Diagrama de Casos de Uso - Sistema de Gestión de Tareas
+## 📌 Diagrama de Casos de Uso - Sistema de Gestión de Tareas
 
 ```mermaid
 flowchart LR
@@ -107,7 +107,7 @@ flowchart LR
         CA2
     end
 ```
-# 📌 Diagrama de Flujo  - SGT
+## 📌 Diagrama de Flujo  - SGT
 
 ```mermaid
 flowchart TD
