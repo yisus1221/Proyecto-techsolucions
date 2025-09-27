@@ -1,6 +1,8 @@
 # TechSolutions S.A. de C.V. — Sistema de Gestión de Tareas (Java + Swing + MongoDB)
 
 > Universidad: TecMilenio · Materia: **Estructuras de Datos** · Profesora: **Blanca Aracely Aranda Machorro** · Ubicación: **Monterrey, Nuevo León**
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/dd8d3596-a7ab-4bb6-811e-7aa38c7346a5" /> <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/687abdfb-932b-401f-a688-3dd26ae39c68" />
+
 
 Este repositorio contiene una implementación base y la documentación de un **sistema de gestión de tareas** para *TechSolutions S.A. de C.V.* construido en **Java 17**, **Swing**, **MongoDB** y **Maven**. Incluye estructuras de datos (Stack, Queue, PriorityQueue, HashMap, árbol binario y grafo de dependencias) y una organización por capas usando **MVC** + **DAO**.
 ##  Índice
@@ -11,15 +13,17 @@ Este repositorio contiene una implementación base y la documentación de un **s
 4. [Tecnologías utilizadas](#tecnologías)  
 5. [Alcance del sistema](#alcance)  
 6. [Roles del sistema](#roles-del-sistema)  
-7. [Beneficios esperados](#beneficios)  
-8. [Estructura del proyecto](#estructura-del-proyecto)  
-9. [Estructuras de datos aplicadas](#estructuras-de-datos-aplicadas)  
-10. [Requisitos Funcionales (RF01–RF09)](#requisitos-funcionales-rf)  
-11. [Objetivos de aprendizaje alcanzados](#objetivos-de-aprendizaje-alcanzados)  
-12. [Cómo ejecutar (local)](#cómo-ejecutar-local)   
-13. [Bibliografía](#bibliografía-selección)  
-14. [Autores](#autores-del-entregable-original)  
-15. [Licencia](#licencia)  
+7. [Beneficios esperados](#beneficios)
+8. [Diagrama de caso de uso](#DiagramadeCasosdeUso)
+9. [Diagrama de flujo](#Diagramadeflujo)
+10. [Estructura del proyecto](#estructura-del-proyecto)  
+11. [Estructuras de datos aplicadas](#estructuras-de-datos-aplicadas)  
+12. [Requisitos Funcionales (RF01–RF09)](#requisitos-funcionales-rf)  
+13. [Objetivos de aprendizaje alcanzados](#objetivos-de-aprendizaje-alcanzados)  
+14. [Cómo ejecutar (local)](#cómo-ejecutar-local)   
+15. [Bibliografía](#bibliografía-selección)  
+16. [Autores](#autores-del-entregable-original)  
+17. [Licencia](#licencia)  
 
 
 
@@ -72,7 +76,8 @@ Una aplicación Java (consola/GUI) que gestiona tareas departamentales con **cli
 Priorización automática, visibilidad de dependencias/jerarquías, búsquedas rápidas, trazabilidad y persistencia de datos.
 
 ---
-## 📌 Diagrama de Casos de Uso - Sistema de Gestión de Tareas
+## Diagrama de Casos de Uso 
+- Sistema de Gestión de Tareas
 
 ```mermaid
 flowchart LR
