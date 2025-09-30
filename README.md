@@ -1,16 +1,10 @@
-# TechSolutions S.A. de C.V. — Sistema de Gestión de Tareas (Java + Swing + MongoDB)
-
-> Universidad: TecMilenio · Materia: **Estructuras de Datos** · Profesora: **Blanca Aracely Aranda Machorro** · Ubicación: **Monterrey, Nuevo León**
-<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/dd8d3596-a7ab-4bb6-811e-7aa38c7346a5" /> <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/687abdfb-932b-401f-a688-3dd26ae39c68" />
-
-
-Este repositorio contiene una implementación base y la documentación de un **sistema de gestión de tareas** para *TechSolutions S.A. de C.V.* construido en **Java 17**, **Swing**, **MongoDB** y **Maven**. Incluye estructuras de datos (Stack, Queue, PriorityQueue, HashMap, árbol binario y grafo de dependencias) y una organización por capas usando **MVC** + **DAO**.
-
-
 # 🏢 TechSolutions S.A. de C.V. - Sistema de Gestión de Tareas
 
 > **Universidad:** TecMilenio · **Materia:** Estructuras de Datos · **Profesora:** Blanca Aracely Aranda Machorro  
 > **Ubicación:** Monterrey, Nuevo León · **Versión:** 1.0.0
+<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/dd8d3596-a7ab-4bb6-811e-7aa38c7346a5" /> <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/687abdfb-932b-401f-a688-3dd26ae39c68" />
+
+Este repositorio contiene una implementación base y la documentación de un **sistema de gestión de tareas** para *TechSolutions S.A. de C.V.* construido en **Java 17**, **Swing**, **MongoDB** y **Maven**. Incluye estructuras de datos (Stack, Queue, PriorityQueue, HashMap, árbol binario y grafo de dependencias) y una organización por capas usando **MVC** + **DAO**.
 
 [![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://www.oracle.com/java/)
 [![Maven](https://img.shields.io/badge/Maven-3.8+-blue.svg)](https://maven.apache.org/)
