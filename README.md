@@ -227,12 +227,6 @@ Map<String, Tarea> hashTareas = new HashMap<>();               // O(1)
 Proyecto/
 ├── 📄 pom.xml                          # Configuración Maven
 ├── 📖 README.md                        # Documentación principal
-├── 📁 Diagramas/                       # Diagramas Mermaid del sistema
-│   ├── diagrama-flujo-principal.mmd
-│   ├── diagrama-casos-uso.mmd
-│   ├── diagrama-clases.mmd
-│   ├── diagrama-arquitectura.mmd
-│   └── README.md
 └── 📁 src/main/java/com/techsolutions/
     ├── 🚀 SistemaGestionTareas.java    # Clase principal con GUI
     ├── 📊 DatosPredeterminados.java    # Carga de datos de prueba
