@@ -446,6 +446,32 @@ public class MongoDBManager {
 
         return arbol;
     }
+    
+    /**
+     * Obtiene todos los empleados como lista desde MongoDB
+     */
+    public List<Empleado> obtenerTodosLosEmpleados() {
+        List<Empleado> empleados = new ArrayList<>();
+        
+        if (!conexionEstablecida) {
+            System.err.println("No hay conexión con MongoDB");
+            return empleados;
+        }
+
+        try {
+            for (Document doc : empleadosCollection.find()) {
+                Empleado empleado = documentToEmpleado(doc);
+                if (empleado != null) {
+                    empleados.add(empleado);
+                }
+            }
+            System.out.println("✅ Cargados " + empleados.size() + " empleados desde MongoDB");
+        } catch (Exception e) {
+            System.err.println("Error al obtener empleados: " + e.getMessage());
+        }
+
+        return empleados;
+    }
 
     // ==================== ESTADÍSTICAS ====================
 
