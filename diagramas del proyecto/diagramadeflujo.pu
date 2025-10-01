@@ -1,0 +1,59 @@
+---
+title: Diagrama de Flujo Simplificado - Sistema de Gestión de Tareas
+---
+flowchart TD
+    A[🚀 Inicio] --> B[🔐 Login]
+    B --> C{✅ Credenciales}
+    C -->|❌| D[⚠️ Error]
+    D --> B
+    C -->|✅| E{👤 Tipo Usuario}
+    
+    E -->|👑 CEO| F[🏢 Panel CEO]
+    E -->|👨‍💼 JEFE| G[📈 Panel Jefe]
+    E -->|🏢 JEFE_DEPTO| H[🎯 Panel Departamento]
+    E -->|👤 EMPLEADO| I[📝 Panel Empleado]
+    
+    F --> J[⚙️ Operaciones]
+    G --> J
+    H --> K[🏢 Operaciones Depto]
+    I --> L[📋 Mis Tareas]
+    
+    J -->|📚| M[Pila LIFO]
+    J -->|⏰| N[Cola FIFO]
+    J -->|📋| O[Lista Depto]
+    J -->|⭐| P[Prioridades]
+    J -->|👥| Q[Empleados BST]
+    J -->|🔍| R[Búsqueda]
+    
+    K --> S[➕ Crear Tareas]
+    K --> T[👥 Ver Empleados]
+    
+    L --> U[✅ Completar]
+    L --> V[📊 Progreso]
+    
+    M --> W{💾 Guardar}
+    N --> W
+    O --> W
+    P --> W
+    S --> W
+    
+    W -->|✅| X[💾 MongoDB]
+    W -->|❌| Y[📝 Memoria]
+    
+    X --> Z[🔄 Actualizar GUI]
+    Y --> Z
+    
+    Z --> AA{🚪 Continuar}
+    AA -->|🔄| J
+    AA -->|🚪| BB[👋 Logout]
+    BB --> B
+    AA -->|❌| CC[🛑 Fin]
+
+    %% Estilos
+    classDef start fill:#4caf50,stroke:#388e3c,color:#fff
+    classDef process fill:#2196f3,stroke:#1976d2,color:#fff
+    classDef decision fill:#ff9800,stroke:#f57c00,color:#fff
+    
+    class A,CC start
+    class B,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,X,Y,Z,BB process
+    class C,E,W,AA decision
