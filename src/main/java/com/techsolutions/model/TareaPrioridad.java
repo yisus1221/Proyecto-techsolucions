@@ -7,10 +7,9 @@ package com.techsolutions.model;
  * donde las tareas se ordenan automáticamente según su nivel de prioridad numérica.
  * 
  * Sistema de Prioridades:
- * - 1 = Prioridad Crítica (mayor urgencia)
- * - 2 = Prioridad Alta
- * - 3 = Prioridad Media  
- * - 4 = Prioridad Baja (menor urgencia)
+ * - 1 = Prioridad Alta
+ * - 2 = Prioridad Media  
+ * - 3 = Prioridad Baja (menor urgencia)
  * 
  * Implementa Comparable para permitir ordenamiento automático en estructuras
  * de datos que requieren comparación (como PriorityQueue).

@@ -37,6 +37,9 @@ public class Tarea {
     
     /** Tiempo estimado en horas para completar la tarea */
     private int horasEstimadas;
+    
+    /** ID del empleado asignado a esta tarea */
+    private String empleadoAsignado;
 
     // ===============================
     // CONSTRUCTORES
@@ -70,6 +73,25 @@ public class Tarea {
      */
     public Tarea(String id, String descripcion, String departamento, String urgencia) {
         this(id, descripcion, departamento, urgencia, 1); // Valor por defecto: 1 hora
+    }
+
+    /**
+     * Constructor completo que incluye empleado asignado.
+     * 
+     * @param id Identificador único de la tarea
+     * @param descripcion Descripción detallada de la tarea
+     * @param departamento Departamento responsable
+     * @param urgencia Nivel de urgencia
+     * @param horasEstimadas Tiempo estimado en horas
+     * @param empleadoAsignado ID del empleado asignado
+     */
+    public Tarea(String id, String descripcion, String departamento, String urgencia, int horasEstimadas, String empleadoAsignado) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.departamento = departamento;
+        this.urgencia = urgencia;
+        this.horasEstimadas = horasEstimadas;
+        this.empleadoAsignado = empleadoAsignado;
     }
 
     // ===============================
@@ -126,8 +148,7 @@ public class Tarea {
     // ===============================
 
     /**
-     * Modifica el identificador de la tarea.
-     * PRECAUCIÓN: Cambiar el ID puede afectar las referencias en la base de datos.
+     * Modifica el identificador de la tarea.¿
      * 
      * @param id Nuevo identificador único para la tarea
      */
@@ -171,6 +192,24 @@ public class Tarea {
         this.horasEstimadas = horasEstimadas;
     }
 
+    /**
+     * Obtiene el ID del empleado asignado a esta tarea.
+     * 
+     * @return ID del empleado asignado o null si no se ha asignado
+     */
+    public String getEmpleadoAsignado() {
+        return empleadoAsignado;
+    }
+
+    /**
+     * Establece el empleado asignado a esta tarea.
+     * 
+     * @param empleadoAsignado ID del empleado a asignar
+     */
+    public void setEmpleadoAsignado(String empleadoAsignado) {
+        this.empleadoAsignado = empleadoAsignado;
+    }
+
     // ===============================
     // MÉTODOS SOBRESCRITOS (OVERRIDE)
     // ===============================
@@ -189,6 +228,7 @@ public class Tarea {
                 ", departamento='" + departamento + '\'' +
                 ", urgencia='" + urgencia + '\'' +
                 ", horasEstimadas=" + horasEstimadas +
+                ", empleadoAsignado='" + empleadoAsignado + '\'' +
                 '}';
     }
 
