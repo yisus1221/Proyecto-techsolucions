@@ -1,59 +1,86 @@
 ---
-title: Diagrama de Flujo Simplificado - Sistema de Gestión de Tareas
+title: Diagrama de Flujo Principal - Sistema de Gestión de Tareas
 ---
 flowchart TD
-    A[🚀 Inicio] --> B[🔐 Login]
-    B --> C{✅ Credenciales}
-    C -->|❌| D[⚠️ Error]
+    A[🚀 Inicio - Main] --> B[🔐 LoginFrame]
+    B --> C{🔍 Validar Credenciales}
+    C -->|❌ Error| D[⚠️ Mostrar Error de Login]
     D --> B
-    C -->|✅| E{👤 Tipo Usuario}
+    C -->|✅ Válidas| E[📋 Obtener Usuario Actual]
+    E --> F[🎯 SistemaGestionTareas Constructor]
+    F --> G[🌐 inicializarSistema]
+    G --> H[🎨 Configurar Look & Feel]
+    H --> I[💾 conectarMongoDB]
+    I --> J{📡 ¿MongoDB Disponible?}
+    J -->|❌ No| K[📁 cargarDatosPredeterminados]
+    J -->|✅ Sí| L[📊 cargarDatosDesdeMongoDB]
+    K --> M[🏗️ configurarInterfaz]
+    L --> M
+    M --> N{👤 ¿Tipo de Usuario?}
     
-    E -->|👑 CEO| F[🏢 Panel CEO]
-    E -->|👨‍💼 JEFE| G[📈 Panel Jefe]
-    E -->|🏢 JEFE_DEPTO| H[🎯 Panel Departamento]
-    E -->|👤 EMPLEADO| I[📝 Panel Empleado]
+    N -->|👑 CEO| O[🏢 configurarInterfazCEO]
+    N -->|👨‍💼 JEFE| P[📈 configurarInterfazJefe]
+    N -->|🏢 JEFE_DEPTO| Q[🎯 configurarInterfazJefeDepartamento]
+    N -->|👤 EMPLEADO| R[📝 configurarInterfazEmpleado]
     
-    F --> J[⚙️ Operaciones]
-    G --> J
-    H --> K[🏢 Operaciones Depto]
-    I --> L[📋 Mis Tareas]
+    O --> S[📊 8 Pestañas + Panel Ejecutivo]
+    P --> T[📊 7 Pestañas Completas]
+    Q --> U[📊 5 Pestañas Filtradas]
+    R --> V[📊 3-4 Pestañas Básicas]
     
-    J -->|📚| M[Pila LIFO]
-    J -->|⏰| N[Cola FIFO]
-    J -->|📋| O[Lista Depto]
-    J -->|⭐| P[Prioridades]
-    J -->|👥| Q[Empleados BST]
-    J -->|🔍| R[Búsqueda]
+    S --> W[🎮 Sistema Completo Visible]
+    T --> W
+    U --> X[🎯 Vista Departamental]
+    V --> Y[📋 Vista Personal]
     
-    K --> S[➕ Crear Tareas]
-    K --> T[👥 Ver Empleados]
+    W --> Z{⚙️ ¿Operación?}
+    X --> AA{🏢 ¿Operación Depto?}
+    Y --> BB{📝 ¿Operación Personal?}
     
-    L --> U[✅ Completar]
-    L --> V[📊 Progreso]
+    Z -->|📚| CC[agregarTareaPila - LIFO]
+    Z -->|⏰| DD[agregarTareaCola - FIFO]
+    Z -->|🏢| EE[agregarTareaLista - Indexado]
+    Z -->|⭐| FF[colaPrioridad - Auto Sort]
+    Z -->|👥| GG[ArbolEmpleados - BST]
+    Z -->|🔍| HH[buscarTareaPorId - HashMap O(1)]
+    Z -->|🕸️| II[dependenciasTareas - Grafo]
     
-    M --> W{💾 Guardar}
-    N --> W
-    O --> W
-    P --> W
-    S --> W
+    AA -->|➕| JJ[crearNuevaTareaDepartamento]
+    AA -->|✅| KK[revisarTareasCompletadas]
     
-    W -->|✅| X[💾 MongoDB]
-    W -->|❌| Y[📝 Memoria]
+    BB -->|📋| LL[Ver Mis Tareas]
+    BB -->|✅| MM[completarTarea]
     
-    X --> Z[🔄 Actualizar GUI]
-    Y --> Z
+    CC --> NN{💾 ¿Guardar?}
+    DD --> NN
+    EE --> NN
+    FF --> NN
+    JJ --> NN
     
-    Z --> AA{🚪 Continuar}
-    AA -->|🔄| J
-    AA -->|🚪| BB[👋 Logout]
-    BB --> B
-    AA -->|❌| CC[🛑 Fin]
+    NN -->|✅ Sí| OO[guardarTareaEnMongoDB]
+    NN -->|❌ No| PP[📝 Solo en Memoria]
+    
+    OO --> QQ[🔄 actualizarTablas]
+    PP --> QQ
+    
+    QQ --> RR[🖼️ Refrescar TableWithFilters]
+    RR --> SS{🚪 ¿Continuar?}
+    
+    SS -->|🔄 Continuar| Z
+    SS -->|🚪 Logout| TT[Confirmar Logout]
+    TT -->|✅ Sí| B
+    TT -->|❌ No| Z
+    SS -->|❌ Cerrar| UU[🛑 System.exit]
 
     %% Estilos
-    classDef start fill:#4caf50,stroke:#388e3c,color:#fff
-    classDef process fill:#2196f3,stroke:#1976d2,color:#fff
-    classDef decision fill:#ff9800,stroke:#f57c00,color:#fff
+    classDef startEnd fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    classDef process fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef dataStructure fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#f44336,stroke-width:2px
     
-    class A,CC start
-    class B,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,X,Y,Z,BB process
-    class C,E,W,AA decision
+    class A,UU startEnd
+    class B,F,G,H,I,K,L,M,O,P,Q,R process
+    class C,J,N,Z,AA,BB,NN,SS,TT decision
+    class CC,DD,EE,FF,GG,HH,II dataStructure
+    class D error
