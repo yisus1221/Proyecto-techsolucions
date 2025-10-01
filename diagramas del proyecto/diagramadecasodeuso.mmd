@@ -1,0 +1,119 @@
+---
+title: Diagrama de Casos de Uso - TechSolutions S.A. de C.V.
+---
+graph TB
+    subgraph "🏢 SISTEMA DE GESTIÓN DE TAREAS - TechSolutions"
+        
+        subgraph "👑 CEO"
+            CEO[👑 CEO]
+            CEO --> UC1[🏢 Dashboard Ejecutivo Completo]
+            CEO --> UC2[📊 Análisis Avanzado Global]
+            CEO --> UC3[💰 Control Financiero]
+            CEO --> UC4[🔒 Auditoría de Sistema]
+            CEO --> UC5[⚙️ Override Sistema]
+        end
+        
+        subgraph "👨‍💼 JEFE GENERAL"
+            JEFE[👨‍💼 Jefe General]
+            JEFE --> UC6[📈 Gestionar Todas Estructuras]
+            JEFE --> UC7[👥 Administrar Usuarios]
+            JEFE --> UC8[📊 Reportes Globales]
+            JEFE --> UC9[🔄 Resetear Sistema]
+            JEFE --> UC10[🆔 Crear Cuentas Masivas]
+            JEFE --> UC11[📋 Panel Administración]
+        end
+        
+        subgraph "🏢 JEFE DEPARTAMENTO"
+            JEFE_DEPTO[🏢 Jefe Departamento]
+            JEFE_DEPTO --> UC12[🎯 Gestionar Tareas Depto]
+            JEFE_DEPTO --> UC13[👥 Supervisar Empleados]
+            JEFE_DEPTO --> UC14[✅ Revisar Completadas]
+            JEFE_DEPTO --> UC15[➕ Crear Tareas]
+            JEFE_DEPTO --> UC16[📊 Panel Especializado]
+        end
+        
+        subgraph "👤 EMPLEADO"
+            EMPLEADO[👤 Empleado]
+            EMPLEADO --> UC17[📋 Ver Mis Tareas]
+            EMPLEADO --> UC18[✅ Completar Tareas]
+            EMPLEADO --> UC19[📊 Ver Mi Progreso]
+            EMPLEADO --> UC20[💬 Panel Departamental]
+        end
+        
+        subgraph "💾 CORE SYSTEM"
+            UC21[🔐 UsuarioService - Autenticación]
+            UC22[💾 MongoDBManager - Persistencia]
+            UC23[🔍 Algoritmos Búsqueda]
+            UC24[📊 Estructuras de Datos]
+            UC25[🕸️ GrafoTareas - Dependencias]
+            UC26[🌳 ArbolEmpleados - BST]
+            UC27[📈 Utilidades - Algoritmos]
+            UC28[🎨 TableWithFilters - GUI]
+        end
+        
+        subgraph "🎯 ESPECIALIZACIÓN POR DEPARTAMENTO"
+            subgraph "💻 IT"
+                UC29[🔧 Tickets Soporte]
+                UC30[⚙️ Mantenimiento Sistemas]
+                UC31[📚 Documentación Técnica]
+            end
+            
+            subgraph "💼 VENTAS"
+                UC32[🎯 CRM - Leads]
+                UC33[👥 Gestión Clientes]
+                UC34[📊 Pipeline Ventas]
+            end
+            
+            subgraph "📢 MARKETING"
+                UC35[📱 Campañas]
+                UC36[🎨 Contenido]
+                UC37[📊 Métricas]
+            end
+            
+            subgraph "👥 RRHH"
+                UC38[👤 Gestión Personal]
+                UC39[📋 Evaluaciones]
+                UC40[🎓 Capacitaciones]
+            end
+        end
+    end
+    
+    %% Conexiones de herencia
+    CEO -.-> JEFE
+    JEFE -.-> JEFE_DEPTO
+    
+    %% Conexiones con sistema core
+    UC1 --> UC21
+    UC6 --> UC22
+    UC11 --> UC23
+    UC12 --> UC24
+    UC15 --> UC25
+    UC13 --> UC26
+    UC8 --> UC27
+    UC16 --> UC28
+    
+    %% Conexiones departamentales
+    JEFE_DEPTO --> UC29
+    JEFE_DEPTO --> UC32
+    JEFE_DEPTO --> UC35
+    JEFE_DEPTO --> UC38
+    
+    EMPLEADO --> UC29
+    EMPLEADO --> UC32
+    EMPLEADO --> UC35
+    EMPLEADO --> UC38
+
+    %% Estilos
+    classDef ceo fill:#fff3c4,stroke:#f57f17,stroke-width:3px
+    classDef jefe fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px
+    classDef jefeDepto fill:#e0f2f1,stroke:#00897b,stroke-width:2px
+    classDef empleado fill:#fce4ec,stroke:#e91e63,stroke-width:2px
+    classDef core fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    classDef departamento fill:#e1f5fe,stroke:#0288d1,stroke-width:1px
+    
+    class CEO,UC1,UC2,UC3,UC4,UC5 ceo
+    class JEFE,UC6,UC7,UC8,UC9,UC10,UC11 jefe
+    class JEFE_DEPTO,UC12,UC13,UC14,UC15,UC16 jefeDepto
+    class EMPLEADO,UC17,UC18,UC19,UC20 empleado
+    class UC21,UC22,UC23,UC24,UC25,UC26,UC27,UC28 core
+    class UC29,UC30,UC31,UC32,UC33,UC34,UC35,UC36,UC37,UC38,UC39,UC40 departamento
