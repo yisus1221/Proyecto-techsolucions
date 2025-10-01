@@ -1,76 +1,53 @@
 ---
-title: Diagrama de Flujo Principal - Sistema de Gestión de Tareas
+title: Diagrama de Flujo Simplificado - Sistema de Gestión de Tareas
 ---
 flowchart TD
-    A[🚀 Inicio - Main] --> B[🔐 LoginFrame]
-    B --> C{🔍 Validar Credenciales}
-    C -->|❌ Error| D[⚠️ Mostrar Error de Login]
+    A[🚀 Inicio] --> B[🔐 Login]
+    B --> C{✅ Credenciales}
+    C -->|❌| D[⚠️ Error]
     D --> B
-    C -->|✅ Válidas| E[📋 Obtener Usuario Actual]
-    E --> F[🎯 SistemaGestionTareas Constructor]
-    F --> G[🌐 inicializarSistema]
-    G --> H[🎨 Configurar Look & Feel]
-    H --> I[💾 conectarMongoDB]
-    I --> J{📡 ¿MongoDB Disponible?}
-    J -->|❌ No| K[📁 cargarDatosPredeterminados]
-    J -->|✅ Sí| L[📊 cargarDatosDesdeMongoDB]
-    K --> M[🏗️ configurarInterfaz]
-    L --> M
-    M --> N{👤 ¿Tipo de Usuario?}
+    C -->|✅| E{👤 Tipo Usuario}
     
-    N -->|👑 CEO| O[🏢 configurarInterfazCEO]
-    N -->|👨‍💼 JEFE| P[📈 configurarInterfazJefe]
-    N -->|🏢 JEFE_DEPTO| Q[🎯 configurarInterfazJefeDepartamento]
-    N -->|👤 EMPLEADO| R[📝 configurarInterfazEmpleado]
+    E -->|👑 CEO| F[🏢 Panel CEO]
+    E -->|👨‍💼 JEFE| G[📈 Panel Jefe]
+    E -->|🏢 JEFE_DEPTO| H[🎯 Panel Departamento]
+    E -->|👤 EMPLEADO| I[📝 Panel Empleado]
     
-    O --> S[📊 8 Pestañas + Panel Ejecutivo]
-    P --> T[📊 7 Pestañas Completas]
-    Q --> U[📊 5 Pestañas Filtradas]
-    R --> V[📊 3-4 Pestañas Básicas]
+    F --> J[⚙️ Operaciones]
+    G --> J
+    H --> K[🏢 Operaciones Depto]
+    I --> L[📋 Mis Tareas]
     
-    S --> W[🎮 Sistema Completo Visible]
-    T --> W
-    U --> X[🎯 Vista Departamental]
-    V --> Y[📋 Vista Personal]
+    J -->|📚| M[Pila LIFO]
+    J -->|⏰| N[Cola FIFO]
+    J -->|📋| O[Lista Depto]
+    J -->|⭐| P[Prioridades]
+    J -->|👥| Q[Empleados BST]
+    J -->|🔍| R[Búsqueda]
     
-    W --> Z{⚙️ ¿Operación?}
-    X --> AA{🏢 ¿Operación Depto?}
-    Y --> BB{📝 ¿Operación Personal?}
+    K --> S[➕ Crear Tareas]
+    K --> T[👥 Ver Empleados]
     
-    Z -->|📚| CC[agregarTareaPila - LIFO]
-    Z -->|⏰| DD[agregarTareaCola - FIFO]
-    Z -->|🏢| EE[agregarTareaLista - Indexado]
-    Z -->|⭐| FF[colaPrioridad - Auto Sort]
-    Z -->|👥| GG[ArbolEmpleados - BST]
-    Z -->|🔍| HH[buscarTareaPorId - HashMap O(1)]
-    Z -->|🕸️| II[dependenciasTareas - Grafo]
+    L --> U[✅ Completar]
+    L --> V[📊 Progreso]
     
-    AA -->|➕| JJ[crearNuevaTareaDepartamento]
-    AA -->|✅| KK[revisarTareasCompletadas]
+    M --> W{💾 Guardar}
+    N --> W
+    O --> W
+    P --> W
+    S --> W
     
-    BB -->|📋| LL[Ver Mis Tareas]
-    BB -->|✅| MM[completarTarea]
+    W -->|✅| X[💾 MongoDB]
+    W -->|❌| Y[📝 Memoria]
     
-    CC --> NN{💾 ¿Guardar?}
-    DD --> NN
-    EE --> NN
-    FF --> NN
-    JJ --> NN
+    X --> Z[🔄 Actualizar GUI]
+    Y --> Z
     
-    NN -->|✅ Sí| OO[guardarTareaEnMongoDB]
-    NN -->|❌ No| PP[📝 Solo en Memoria]
-    
-    OO --> QQ[🔄 actualizarTablas]
-    PP --> QQ
-    
-    QQ --> RR[🖼️ Refrescar TableWithFilters]
-    RR --> SS{🚪 ¿Continuar?}
-    
-    SS -->|🔄 Continuar| Z
-    SS -->|🚪 Logout| TT[Confirmar Logout]
-    TT -->|✅ Sí| B
-    TT -->|❌ No| Z
-    SS -->|❌ Cerrar| UU[🛑 System.exit]
+    Z --> AA{🚪 Continuar}
+    AA -->|🔄| J
+    AA -->|🚪| BB[👋 Logout]
+    BB --> B
+    AA -->|❌| CC[🛑 Fin]
 
     %% Estilos
     classDef startEnd fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
