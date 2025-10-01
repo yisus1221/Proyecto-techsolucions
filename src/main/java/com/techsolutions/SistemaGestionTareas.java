@@ -31,48 +31,54 @@ import com.techsolutions.model.Tarea;
 import com.techsolutions.model.TareaPrioridad;
 import com.techsolutions.model.Empleado;
 import com.techsolutions.model.ArbolEmpleados;
+import com.techsolutions.model.Usuario;
+import com.techsolutions.gui.LoginFrame;
+import com.techsolutions.gui.ArbolEmpleadosViewer;
+import com.techsolutions.gui.GestionUsuariosPanel;
+import com.techsolutions.services.UsuarioService;
+import com.techsolutions.gui.TableWithFilters;
 
 /**
- * SISTEMA DE GESTIÓN DE TAREAS - TechSolutions S.A. de C.V.
+ * SISTEMA DE GESTION DE TAREAS - TechSolutions S.A. de C.V.
  * 
- * Aplicación principal que implementa un sistema completo de gestión de tareas
- * utilizando múltiples estructuras de datos y una interfaz gráfica moderna.
+ * Aplicacion principal que implementa un sistema completo de gestion de tareas
+ * utilizando multiples estructuras de datos y una interfaz grafica moderna.
  * 
  * ESTRUCTURAS DE DATOS IMPLEMENTADAS:
  * =====================================
  * 
  * 1. PILA (Stack) - Tareas Urgentes:
  *    - Implementa LIFO (Last In, First Out)
- *    - Para tareas que requieren atención inmediata
+ *    - Para tareas que requieren atencion inmediata
  *    - Operaciones: Push, Pop, Peek
  * 
  * 2. COLA (Queue) - Tareas Programadas:
  *    - Implementa FIFO (First In, First Out)
- *    - Para tareas con secuencia específica
+ *    - Para tareas con secuencia especifica
  *    - Operaciones: Enqueue, Dequeue, Front
  * 
  * 3. LISTA (List) - Tareas Departamentales:
- *    - Acceso indexado y búsquedas específicas
+ *    - Acceso indexado y busquedas especificas
  *    - Para tareas organizadas por departamento
- *    - Operaciones: Insertar, Eliminar, Buscar por índice
+ *    - Operaciones: Insertar, Eliminar, Buscar por indice
  * 
  * 4. COLA DE PRIORIDAD (PriorityQueue) - Tareas Priorizadas:
- *    - Ordenamiento automático por prioridad numérica
+ *    - Ordenamiento automatico por prioridad numerica
  *    - Para tareas con niveles de importancia
- *    - Operaciones: Insertar con prioridad, Extraer más prioritaria
+ *    - Operaciones: Insertar con prioridad, Extraer mas prioritaria
  * 
- * 5. ÁRBOL BINARIO DE BÚSQUEDA (BST) - Empleados:
- *    - Búsqueda eficiente O(log n)
+ * 5. ARBOL BINARIO DE BUSQUEDA (BST) - Empleados:
+ *    - Busqueda eficiente O(log n)
  *    - Empleados ordenados por ID
  *    - Operaciones: Insertar, Buscar, Recorridos
  * 
- * CARACTERÍSTICAS TÉCNICAS:
+ * CARACTERISTICAS TECNICAS:
  * =========================
- * - Interfaz gráfica moderna con Swing
- * - Integración con MongoDB para persistencia
- * - Algoritmos de búsqueda y ordenamiento
- * - Recursividad para cálculos complejos
- * - Divide y vencerás para distribución de tareas
+ * - Interfaz grafica moderna con Swing
+ * - Integracion con MongoDB para persistencia
+ * - Algoritmos de busqueda y ordenamiento
+ * - Recursividad para calculos complejos
+ * - Divide y venceras para distribucion de tareas
  * - Grafos para dependencias entre tareas
  * 
  * @author TechSolutions Development Team
@@ -86,35 +92,35 @@ public class SistemaGestionTareas extends JFrame {
     // ===============================================
     
     /** PILA - Para tareas urgentes (LIFO) */
-    private final Stack<Tarea> pilaTareasUrgentes;
+    private final Stack<Tarea> pilaTareasUrgentes = new Stack<>();
     
     /** COLA - Para tareas programadas (FIFO) */
-    private final LinkedList<Tarea> colaTareasProgramadas;
+    private final LinkedList<Tarea> colaTareasProgramadas = new LinkedList<>();
     
     /** LISTA - Para tareas departamentales (acceso indexado) */
-    private final List<Tarea> listaTareasDepartamento;
+    private final List<Tarea> listaTareasDepartamento = new ArrayList<>();
     
     // ===============================================
-    // CONEXIÓN A BASE DE DATOS MONGODB
+    // CONEXION A BASE DE DATOS MONGODB
     // ===============================================
     
-    /** Cliente de conexión a MongoDB */
+    /** Cliente de conexion a MongoDB */
     private MongoClient mongoClient;
     
     /** Base de datos MongoDB */
     private MongoDatabase database;
     
-    /** Colección de tareas en MongoDB */
+    /** Coleccion de tareas en MongoDB */
     private MongoCollection<Document> collection;
     
-    /** Colección de empleados en MongoDB */
+    /** Coleccion de empleados en MongoDB */
     private MongoCollection<Document> empleadosCollection;
     
     // ===============================================
-    // COMPONENTES DE INTERFAZ GRÁFICA
+    // COMPONENTES DE INTERFAZ GRAFICA
     // ===============================================
     
-    /** Panel con pestañas principales */
+    /** Panel con pestanas principales */
     private JTabbedPane tabbedPane;
     
     /** Paneles para cada estructura de datos */
@@ -145,7 +151,7 @@ public class SistemaGestionTareas extends JFrame {
     private JPanel panelPrioridad;
     private JTable tablaPrioridad;
     private DefaultTableModel modelPrioridad;
-    private JButton btnVerPrioridad, btnEliminarPrioridad; // Agrega esta línea junto con los otros botones
+    private JButton btnVerPrioridad, btnEliminarPrioridad; // Agrega esta linea junto con los otros botones
     
     // Panel Empleados
     private JPanel panelEmpleados;
@@ -154,7 +160,7 @@ public class SistemaGestionTareas extends JFrame {
     private JTextField txtBusquedaEmpleado;
     private JButton btnBuscarEmpleado, btnMostrarArbol, btnInsertarEmpleado;
 
-    // Las clases de modelo ahora están en paquetes separados para mejor organización
+    // Las clases de modelo ahora estan en paquetes separados para mejor organizacion
 
 
 
@@ -165,11 +171,11 @@ public class SistemaGestionTareas extends JFrame {
         return tiempo + calcularTiempoTotalRecursivo(tareas, idx + 1);
     }
 
-    // Divide y vencerás para distribuir tareas (puedes mostrar la asignación en la interfaz)
+    // Divide y venceras para distribuir tareas (puedes mostrar la asignacion en la interfaz)
     private void distribuirTareasDivideVenceras(List<Tarea> tareas, int inicio, int fin) {
         if (inicio >= fin) return;
         int medio = (inicio + fin) / 2;
-        // Aquí podrías asignar tareas.get(medio) a un empleado/proyecto
+        // Aqui podrias asignar tareas.get(medio) a un empleado/proyecto
         distribuirTareasDivideVenceras(tareas, inicio, medio);
         distribuirTareasDivideVenceras(tareas, medio + 1, fin);
     }
@@ -177,12 +183,12 @@ public class SistemaGestionTareas extends JFrame {
     // HashMap para tareas y empleados
     private final Map<String, Tarea> hashTareas = new HashMap<>();
 
-    // Métodos de ordenamiento y búsqueda
+    // Metodos de ordenamiento y busqueda
     private void ordenarTareasPorPrioridadFecha(List<TareaPrioridad> lista) {
         lista.sort(Comparator.naturalOrder());
     }
 
-    // Ejemplo de búsqueda eficiente
+    // Ejemplo de busqueda eficiente
     private Tarea buscarTareaPorId(String id) {
         return hashTareas.get(id);
     }
@@ -190,16 +196,36 @@ public class SistemaGestionTareas extends JFrame {
     // Cola de prioridades global
     private final PriorityQueue<TareaPrioridad> colaPrioridad = new PriorityQueue<>();
 
-    // Árbol binario de empleados global
+    // Arbol binario de empleados global
     private final ArbolEmpleados arbolEmpleados = new ArbolEmpleados();
 
     // --- Dependencias entre tareas (grafo simple) ---
     private final Map<String, List<String>> dependenciasTareas = new HashMap<>();
     private JButton btnAgregarDependencia, btnVerDependencias;
+    
+    // Usuario actual del sistema
+    private Usuario usuarioActual;
 
-    public SistemaGestionTareas() {
-        super("Sistema de Gestión de Tareas - TechSolutions S.A. de C.V.");
+    public SistemaGestionTareas(Usuario usuario) {
+        super("Sistema de Gestion de Tareas - TechSolutions S.A. de C.V.");
+        this.usuarioActual = usuario;
         
+        inicializarSistema();
+    }
+    
+    // Constructor por defecto (para compatibilidad)
+    public SistemaGestionTareas() {
+        super("Sistema de Gestion de Tareas - TechSolutions S.A. de C.V.");
+        // Crear usuario temporal para testing
+        this.usuarioActual = new Usuario("temp", "temp", Usuario.Rol.JEFE, "Direccion");
+        
+        inicializarSistema();
+    }
+    
+    /**
+     * Inicializa todos los componentes del sistema
+     */
+    private void inicializarSistema() {
         // Configurar look and feel moderno
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -214,49 +240,35 @@ public class SistemaGestionTareas extends JFrame {
             UIManager.put("TableHeader.foreground", Color.BLACK);
             UIManager.put("TableHeader.font", new Font("Segoe UI", Font.BOLD, 12));
         } catch (Exception e) {
-            System.err.println("No se pudo establecer el look and feel: " + e.getMessage());
+            System.err.println("Error configurando Look and Feel: " + e.getMessage());
         }
         
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 800);
-        setLocationRelativeTo(null);
-        setIconImage(createAppIcon());
-        
-        // Configurar el panel principal con gradiente
-        setContentPane(createMainPanel());
-
-        // Inicializar estructuras de datos
-        pilaTareasUrgentes = new Stack<>();
-        colaTareasProgramadas = new LinkedList<>();
-        listaTareasDepartamento = new ArrayList<>();
-
-        // Ya no declares colaPrioridad ni arbolEmpleados aquí, ya son atributos globales
-
         // HashMap de tareas
-        hashTareas.put("T1", new Tarea("T1", "Revisar código", "Desarrollo", "Alta"));
+        hashTareas.put("T1", new Tarea("T1", "Revisar codigo", "Desarrollo", "Alta"));
 
         // Conectar a MongoDB
         conectarMongoDB();
 
-        // PRIMERO: Configurar interfaz (esto inicializa los modelos de tabla)
+        // Configurar interfaz completa
         configurarInterfaz();
 
-        // SEGUNDO: Cargar datos desde MongoDB (después de inicializar los modelos)
+        // Cargar datos desde MongoDB
         cargarDatosDesdeMongoDB();
         
-        // Cargar empleados en el árbol
+        // Cargar empleados en el arbol
         cargarEmpleadosDesdeMongoDB();
-
-        setVisible(true);
 
         // Ejemplo de ordenamiento
         java.util.List<TareaPrioridad> listaPrioridad = new ArrayList<>();
-        listaPrioridad.add(new TareaPrioridad("T2", "Documentar", "Soporte Técnico", "Media", 2, "2025-09-20"));
+        listaPrioridad.add(new TareaPrioridad("T2", "Documentar", "Soporte Tecnico", "Media", 2, "2025-09-20"));
         listaPrioridad.add(new TareaPrioridad("T3", "Testear", "Desarrollo", "Alta", 1, "2025-09-18"));
         ordenarTareasPorPrioridadFecha(listaPrioridad);
+        
+        // Mostrar ventana
+        setVisible(true);
     }
     
-    // Método para crear icono de la aplicación
+    // Metodo para crear icono de la aplicacion
     private Image createAppIcon() {
         BufferedImage icon = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = icon.createGraphics();
@@ -270,7 +282,7 @@ public class SistemaGestionTareas extends JFrame {
         return icon;
     }
     
-    // Método para crear el panel principal con gradiente
+    // Metodo para crear el panel principal con gradiente
     private JPanel createMainPanel() {
         return new JPanel(new BorderLayout()) {
             @Override
@@ -285,21 +297,26 @@ public class SistemaGestionTareas extends JFrame {
         };
     }
     
-    // Conectar a MongoDB también para empleados
+    // Conectar a MongoDB tambien para empleados
     private void conectarMongoDB() {
         try {
             mongoClient = MongoClients.create("mongodb://localhost:27017");
             database = mongoClient.getDatabase("techsolutions");
             collection = database.getCollection("tareas");
             empleadosCollection = database.getCollection("empleados");
-            System.out.println("Conexión a MongoDB establecida correctamente");
+            System.out.println("Conexion a MongoDB establecida correctamente");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al conectar con MongoDB: " + e.getMessage(), 
-                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al conectar con MongoDB: " + e.getMessage());
+            System.err.println("El sistema funcionara sin persistencia de datos");
+            // No mostrar dialogo de error que podria interferir con la inicializacion
+            mongoClient = null;
+            database = null;
+            collection = null;
+            empleadosCollection = null;
         }
     }
     
-    // Cargar empleados en el árbol desde MongoDB
+    // Cargar empleados en el arbol desde MongoDB
     private ArbolEmpleados cargarEmpleadosDesdeMongoDB() {
         ArbolEmpleados arbol = new ArbolEmpleados();
         for (Document doc : empleadosCollection.find()) {
@@ -313,6 +330,13 @@ public class SistemaGestionTareas extends JFrame {
     }
     
     private void cargarDatosDesdeMongoDB() {
+        // Si no hay conexion a MongoDB, no intentar cargar datos
+        if (collection == null || empleadosCollection == null) {
+            System.out.println("MongoDB no disponible, usando datos predeterminados");
+            cargarDatosPredeterminados();
+            return;
+        }
+        
         try {
             pilaTareasUrgentes.clear();
             colaTareasProgramadas.clear();
@@ -330,7 +354,7 @@ public class SistemaGestionTareas extends JFrame {
                 int prioridad = doc.getInteger("prioridad", 2); // Default Media
                 String fechaEntrega = doc.getString("fechaEntrega");
 
-                // Si tiene prioridad y fecha, úsalo como TareaPrioridad
+                // Si tiene prioridad y fecha, usalo como TareaPrioridad
                 if (prioridad > 0 && fechaEntrega != null) {
                     TareaPrioridad tp = new TareaPrioridad(
                         tarea.getId(), tarea.getDescripcion(), tarea.getDepartamento(),
@@ -339,10 +363,16 @@ public class SistemaGestionTareas extends JFrame {
                     colaPrioridad.add(tp);
                 }
 
-                // Lógica original
+                // Logica original
                 if ("urgente".equals(tipo)) pilaTareasUrgentes.push(tarea);
                 else if ("programada".equals(tipo)) colaTareasProgramadas.add(tarea);
-                else if ("departamento".equals(tipo)) listaTareasDepartamento.add(tarea);
+                else if ("departamento".equals(tipo)) {
+                    // Solo agregar tareas del departamento del usuario actual
+                    if (tarea.getDepartamento() != null && 
+                        tarea.getDepartamento().equals(usuarioActual.getDepartamento())) {
+                        listaTareasDepartamento.add(tarea);
+                    }
+                }
 
                 // Cargar dependencias si existen
                 Object depsObj = doc.get("dependencias");
@@ -358,7 +388,7 @@ public class SistemaGestionTareas extends JFrame {
                 }
             }
 
-            // Cargar empleados en el árbol desde MongoDB
+            // Cargar empleados en el arbol desde MongoDB
             for (Document doc : empleadosCollection.find()) {
                 arbolEmpleados.insertar(new Empleado(
                     doc.getString("id"),
@@ -368,10 +398,93 @@ public class SistemaGestionTareas extends JFrame {
             }
 
             actualizarTablas();
-            mostrarTodosEmpleados(); // <-- Agrega esta línea
+            mostrarTodosEmpleados(); // <-- Agrega esta linea
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar datos desde MongoDB: " + e.getMessage(), 
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al cargar datos desde MongoDB: " + e.getMessage());
+            cargarDatosPredeterminados();
+        }
+    }
+    
+    /**
+     * Carga algunos datos predeterminados cuando MongoDB no esta disponible
+     */
+    private void cargarDatosPredeterminados() {
+        // Agregar algunas tareas de ejemplo
+        Tarea tarea1 = new Tarea("T001", "Revisar codigo fuente", "Desarrollo", "Alta");
+        Tarea tarea2 = new Tarea("T002", "Actualizar documentacion", "Soporte", "Media");
+        Tarea tarea3 = new Tarea("T003", "Preparar presentacion", "Ventas", "Baja");
+        
+        // Agregar tareas con prioridad
+        TareaPrioridad tarea4 = new TareaPrioridad("T004", "Implementar nueva funcionalidad", "Desarrollo", "Alta", 1, "2025-12-31");
+        TareaPrioridad tarea5 = new TareaPrioridad("T005", "Revisar reportes mensuales", "Administracion", "Media", 2, "2025-11-30");
+        
+        pilaTareasUrgentes.push(tarea1);
+        colaTareasProgramadas.add(tarea2);
+        listaTareasDepartamento.add(tarea3);
+        colaPrioridad.add(tarea4);
+        colaPrioridad.add(tarea5);
+        
+        hashTareas.put(tarea1.getId(), tarea1);
+        hashTareas.put(tarea2.getId(), tarea2);
+        hashTareas.put(tarea3.getId(), tarea3);
+        hashTareas.put(tarea4.getId(), tarea4);
+        hashTareas.put(tarea5.getId(), tarea5);
+        
+        // Agregar empleados de ejemplo
+        arbolEmpleados.insertar(new Empleado("E001", "Juan Perez", "Desarrollo"));
+        arbolEmpleados.insertar(new Empleado("E002", "Maria Garcia", "Soporte"));
+        arbolEmpleados.insertar(new Empleado("E003", "Carlos Lopez", "Ventas"));
+        
+        actualizarTablasSegunRol();
+    }
+    
+    /**
+     * Actualiza las tablas segun el rol del usuario
+     */
+    private void actualizarTablasSegunRol() {
+        if (usuarioActual.esJefe()) {
+            // Solo el jefe tiene acceso a todas las tablas
+            actualizarTablas();
+            mostrarTodosEmpleados();
+        } else if (usuarioActual.esJefeDepartamento()) {
+            // Jefe de departamento solo actualiza las tablas que maneja
+            actualizarTablasDepartamento();
+        } else if (usuarioActual.esEmpleado()) {
+            // Empleados solo manejan sus propias tareas
+            actualizarTareasEmpleado();
+        }
+    }
+    
+    /**
+     * Actualiza solo las tablas disponibles para jefe de departamento
+     */
+    private void actualizarTablasDepartamento() {
+        // Solo actualizar las tablas que el jefe de departamento puede ver
+        if (modelLista != null) {
+            actualizarTablaLista();
+        }
+        if (modelPrioridad != null) {
+            actualizarTablaPrioridad();
+        }
+        if (modelEmpleados != null) {
+            mostrarTodosEmpleados();
+        }
+    }
+    
+    /**
+     * Actualiza solo las tareas visibles para empleados
+     */
+    private void actualizarTareasEmpleado() {
+        // Actualizar la tabla de tareas para el empleado
+        if (usuarioActual.getRol() == Usuario.Rol.EMPLEADO) {
+            // Limpiar el modelo de la tabla
+            DefaultTableModel modelo = (DefaultTableModel) tablaLista.getModel();
+            modelo.setRowCount(0);
+            
+            // Recargar las tareas asignadas al empleado
+            cargarTareasEmpleado(modelo);
+            
+            System.out.println("🔄 Vista de empleado actualizada correctamente");
         }
     }
     
@@ -389,7 +502,8 @@ public class SistemaGestionTareas extends JFrame {
                     .append("descripcion", tarea.getDescripcion())
                     .append("departamento", tarea.getDepartamento())
                     .append("urgencia", tarea.getUrgencia())
-                    .append("horasEstimadas", tarea.getHorasEstimadas()) // NUEVO
+                    .append("horasEstimadas", tarea.getHorasEstimadas())
+                    .append("empleadoAsignado", tarea.getEmpleadoAsignado()) // NUEVO: empleado asignado
                     .append("tipo", tipo)
                     .append("prioridad", prioridad)
                     .append("fechaEntrega", fechaEntrega);
@@ -400,65 +514,273 @@ public class SistemaGestionTareas extends JFrame {
         }
     }
     
+    /**
+     * Actualiza una tarea existente en MongoDB
+     */
+    private void actualizarTareaEnMongoDB(Tarea tarea) {
+        try {
+            Document filtro = new Document("id", tarea.getId());
+            Document actualizacion = new Document("$set", new Document()
+                    .append("descripcion", tarea.getDescripcion())
+                    .append("departamento", tarea.getDepartamento())
+                    .append("urgencia", tarea.getUrgencia())
+                    .append("horasEstimadas", tarea.getHorasEstimadas())
+                    .append("empleadoAsignado", tarea.getEmpleadoAsignado()));
+            
+            collection.updateOne(filtro, actualizacion);
+            System.out.println("Tarea actualizada en MongoDB: " + tarea.getId());
+        } catch (Exception e) {
+            System.err.println("Error al actualizar tarea en MongoDB: " + e.getMessage());
+        }
+    }
+    
     private Tarea documentToTarea(Document doc) {
         String id = doc.getString("id");
         String descripcion = doc.getString("descripcion");
         String departamento = doc.getString("departamento");
         String urgencia = doc.getString("urgencia");
-        int horasEstimadas = doc.getInteger("horasEstimadas", 1); // NUEVO
-        return new Tarea(id, descripcion, departamento, urgencia, horasEstimadas);
+        int horasEstimadas = doc.getInteger("horasEstimadas", 1);
+        String empleadoAsignado = doc.getString("empleadoAsignado"); // NUEVO
+        
+        Tarea tarea = new Tarea(id, descripcion, departamento, urgencia, horasEstimadas);
+        if (empleadoAsignado != null && !empleadoAsignado.isEmpty()) {
+            tarea.setEmpleadoAsignado(empleadoAsignado);
+        }
+        return tarea;
     }
     
     private void configurarInterfaz() {
+        // Configurar ventana principal con tamano mas grande
+        setTitle("Sistema de Gestion de Tareas - " + usuarioActual.getNombre() + " (" + usuarioActual.getRol().getDescripcion() + ")");
+        setSize(1400, 900); // Aumentado de 1200x800 a 1400x900
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setIconImage(createAppIcon());
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximizar ventana
+        
+        // Configurar panel principal con gradiente
+        JPanel mainPanel = createMainPanel();
+        setContentPane(mainPanel);
+        
+        // Crear menu superior con informacion del usuario
+        crearMenuSuperior(mainPanel);
+        
         // Crear el tabbedPane con estilo moderno
         tabbedPane = new JTabbedPane();
-        tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 14)); // Aumentado de 13 a 14
         tabbedPane.setBackground(new Color(240, 248, 255));
-        tabbedPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        tabbedPane.setBorder(new EmptyBorder(15, 15, 15, 15)); // Aumentado padding
 
-        // Configurar paneles con diseño mejorado
+        // Configurar paneles segun el rol del usuario
+        configurarPanelesPorRol();
+
+        // Agregar el tabbedPane al panel principal
+        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+    }
+    
+    /**
+     * Crea el menu superior con informacion del usuario y opciones de logout
+     */
+    private void crearMenuSuperior(JPanel mainPanel) {
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        panelSuperior.setOpaque(true); // Cambiar a true para que se vea
+        panelSuperior.setBackground(new Color(60, 120, 170)); // Fondo azul
+        panelSuperior.setBorder(new EmptyBorder(15, 20, 15, 20)); // Aumentar padding
+        panelSuperior.setPreferredSize(new Dimension(0, 60)); // Altura fija
+        
+        // Informacion del usuario
+        String nombreCompleto = usuarioActual.getNombre() != null ? usuarioActual.getNombre() : usuarioActual.getUsername();
+        JLabel lblUsuario = new JLabel(String.format("%s | %s | %s", 
+            nombreCompleto, 
+            usuarioActual.getRol().getDescripcion(),
+            usuarioActual.getDepartamento()));
+        lblUsuario.setFont(new Font("Segoe UI", Font.BOLD, 16)); // Aumentar fuente
+        lblUsuario.setForeground(Color.WHITE);
+        
+        // Panel para el reloj (opcional)
+        JLabel lblHora = new JLabel("[Hora] " + java.time.LocalTime.now().toString().substring(0, 5));
+        lblHora.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblHora.setForeground(Color.WHITE);
+        
+        // Boton de logout
+        JButton btnLogout = crearBotonModerno("Cerrar Sesion", new Color(220, 20, 60));
+        btnLogout.setPreferredSize(new Dimension(150, 35)); // Tamano fijo
+        btnLogout.addActionListener(e -> {
+            int opcion = JOptionPane.showConfirmDialog(this, 
+                "Esta seguro de que desea cerrar sesion?", 
+                "Confirmar Logout", JOptionPane.YES_NO_OPTION);
+            if (opcion == JOptionPane.YES_OPTION) {
+                dispose();
+                new LoginFrame().setVisible(true);
+            }
+        });
+        
+        // Panel izquierdo para usuario y hora
+        JPanel panelIzquierdo = new JPanel(new BorderLayout());
+        panelIzquierdo.setOpaque(false);
+        panelIzquierdo.add(lblUsuario, BorderLayout.WEST);
+        panelIzquierdo.add(lblHora, BorderLayout.EAST);
+        
+        panelSuperior.add(panelIzquierdo, BorderLayout.WEST);
+        panelSuperior.add(btnLogout, BorderLayout.EAST);
+        mainPanel.add(panelSuperior, BorderLayout.NORTH);
+    }
+    
+    /**
+     * Configura los paneles segun el rol del usuario autenticado
+     */
+    private void configurarPanelesPorRol() {
+        if (usuarioActual.esCEO()) {
+            // CEO: Acceso completo a todo el sistema con permisos especiales
+            configurarInterfazCEO();
+        } else if (usuarioActual.esJefe()) {
+            // JEFE GENERAL: Acceso completo a todo el sistema
+            configurarInterfazJefe();
+        } else if (usuarioActual.esJefeDepartamento()) {
+            // JEFE DE DEPARTAMENTO: Solo gestion de su departamento
+            configurarInterfazJefeDepartamento();
+        } else if (usuarioActual.esEmpleado()) {
+            // EMPLEADO: Solo sus tareas asignadas
+            configurarInterfazEmpleado();
+        }
+    }
+    
+    /**
+     * Configura la interfaz completa para el jefe general
+     */
+    private void configurarInterfazJefe() {
+        // Configurar paneles con diseno mejorado
         panelPila = crearPanelPila();
         panelCola = crearPanelCola();
         panelLista = crearPanelLista();
         panelGeneral = crearPanelGeneral();
         panelPrioridad = crearPanelPrioridad();
         panelEmpleados = crearPanelEmpleados();
+        JPanel panelAdministracion = crearPanelAdministracion();
 
-        // Agregar tabs con iconos
-        tabbedPane.addTab("📚 Tareas Urgentes", panelPila);
-        tabbedPane.addTab("⏰ Tareas Programadas", panelCola);
-        tabbedPane.addTab("🏢 Por Departamento", panelLista);
-        tabbedPane.addTab("📋 Todas las Tareas", panelGeneral);
-        tabbedPane.addTab("⭐ Prioridades", panelPrioridad);
-        tabbedPane.addTab("👥 Empleados", panelEmpleados);
+        // Agregar tabs con iconos (acceso completo)
+        tabbedPane.addTab("Tareas Urgentes", panelPila);
+        tabbedPane.addTab("Tareas Programadas", panelCola);
+        tabbedPane.addTab("Por Departamento", panelLista);
+        tabbedPane.addTab("Todas las Tareas", panelGeneral);
+        tabbedPane.addTab("Prioridades", panelPrioridad);
+        tabbedPane.addTab("Empleados", panelEmpleados);
+        tabbedPane.addTab("Administracion", panelAdministracion);
+    }
+    
+    /**
+     * Configura la interfaz completa para el CEO con permisos especiales
+     */
+    private void configurarInterfazCEO() {
+        // Configurar titulo especial para CEO
+        setTitle("TechSolutions - " + usuarioActual.getRol().getDescripcion() + " - Control Total");
+        
+        // CEO tiene acceso completo igual que jefe pero con permisos especiales
+        panelPila = crearPanelPila();
+        panelCola = crearPanelCola();
+        panelLista = crearPanelLista();
+        panelGeneral = crearPanelGeneral();
+        panelPrioridad = crearPanelPrioridad();
+        panelEmpleados = crearPanelEmpleados();
+        JPanel panelAdministracion = crearPanelAdministracion();
+        JPanel panelEjecutivo = crearPanelEjecutivo(); // Panel especial para CEO
 
-        // Agregar el tabbedPane al panel principal
-        JPanel mainPanel = (JPanel) getContentPane();
-        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+        // Agregar tabs con acceso ejecutivo completo
+        tabbedPane.addTab("Tareas Urgentes", panelPila);
+        tabbedPane.addTab("Tareas Programadas", panelCola);
+        tabbedPane.addTab("Por Departamento", panelLista);
+        tabbedPane.addTab("Todas las Tareas", panelGeneral);
+        tabbedPane.addTab("Prioridades", panelPrioridad);
+        tabbedPane.addTab("Empleados", panelEmpleados);
+        tabbedPane.addTab("Administracion", panelAdministracion);
+        tabbedPane.addTab("Panel Ejecutivo", panelEjecutivo);
+    }
+    
+    /**
+     * Configura la interfaz para jefe de departamento con menus especificos
+     */
+    private void configurarInterfazJefeDepartamento() {
+        // Configurar titulo personalizado
+        setTitle("TechSolutions - " + usuarioActual.getRol().getDescripcion() + 
+                 " (" + usuarioActual.getDepartamento() + ")");
+        
+        // Paneles basicos para jefes de departamento
+        panelLista = crearPanelListaDepartamento();
+        panelPrioridad = crearPanelPrioridadDepartamento();
+        panelEmpleados = crearPanelEmpleadosDepartamento();
+        JPanel panelGestionDepartamento = crearPanelGestionDepartamento();
+        JPanel panelEspecializado = crearPanelEspecializadoPorDepartamento();
+
+        // Agregar tabs limitados para jefe de departamento
+        tabbedPane.addTab("Tareas del Departamento", panelLista);
+        tabbedPane.addTab("Prioridades", panelPrioridad);
+        tabbedPane.addTab("Empleados del Depto", panelEmpleados);
+        tabbedPane.addTab("Gestion", panelGestionDepartamento);
+        
+        // Agregar panel especializado si existe
+        if (panelEspecializado != null) {
+            String nombreTab = obtenerNombreTabEspecializado();
+            tabbedPane.addTab(nombreTab, panelEspecializado);
+        }
+        
+        mostrarMensajeBienvenidaJefe();
+    }
+    
+    /**
+     * Configura la interfaz simplificada para empleado
+     */
+    private void configurarInterfazEmpleado() {
+        JPanel panelMisTareas = crearPanelMisTareas();
+        JPanel panelCompletarTareas = crearPanelCompletarTareas();
+        JPanel panelTareasPendientes = crearPanelTareasPendientes();
+
+        // Agregar tabs para empleado
+        tabbedPane.addTab("Mis Tareas", panelMisTareas);
+        tabbedPane.addTab("Completar Tareas", panelCompletarTareas);
+        tabbedPane.addTab("Pendientes", panelTareasPendientes);
+        
+        // Agregar panel departamental especifico si esta disponible
+        JPanel panelDepartamental = crearPanelDepartamentalEmpleado();
+        if (panelDepartamental != null) {
+            String nombreTab = obtenerNombreTabDepartamentalEmpleado();
+            tabbedPane.addTab(nombreTab, panelDepartamental);
+        }
+        
+        // Mostrar mensaje de bienvenida
+        mostrarMensajeBienvenidaEmpleado();
     }
 
     private JPanel crearPanelPila() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        panel.setBorder(new TitledBorder(null, "📚 Gestión de Tareas Urgentes (Pila LIFO)", 
+        panel.setBorder(new TitledBorder(null, "Gestion de Tareas Urgentes", 
                 TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
         
-        // Modelo de tabla mejorado
-        String[] columnas = {"🆔 ID", "📝 Descripción", "🏢 Departamento", "⚠️ Urgencia"};
-        modelPila = new DefaultTableModel(columnas, 0);
-        tablaPila = new JTable(modelPila);
+        // Modelo de tabla mejorado - NO EDITABLE
+        String[] columnas = {"ID", "Descripcion", "Departamento", "Urgencia"};
+        modelPila = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer tabla completamente no editable
+            }
+        };
         
-        // Personalizar la tabla
-        personalizarTabla(tablaPila);
+        // Usar nueva tabla con filtros
+        TableWithFilters tablaPila = new TableWithFilters(modelPila);
+        this.tablaPila = tablaPila; // Asignar referencia
         
-        // Panel de botones mejorado
+        // Panel de botones en la parte SUPERIOR
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        panelBotones.setBackground(new Color(245, 250, 255));
-        panelBotones.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelBotones.setBackground(new Color(240, 248, 255));
+        panelBotones.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "Acciones", TitledBorder.CENTER, TitledBorder.TOP,
+            new Font("Segoe UI", Font.BOLD, 11), new Color(70, 130, 180)
+        ));
         
-        btnPush = crearBotonModerno("➕ Agregar (Push)", new Color(105, 105, 105));
-        btnPop = crearBotonModerno("➖ Eliminar (Pop)", new Color(169, 169, 169));
-        btnPeek = crearBotonModerno("👁️ Ver Último (Peek)", new Color(128, 128, 128));
+        btnPush = crearBotonModerno("Agregar", new Color(144, 238, 144));
+        btnPop = crearBotonModerno("Eliminar", new Color(255, 182, 193));
+        btnPeek = crearBotonModerno("Ver Último", new Color(173, 216, 230));
         
         btnPush.addActionListener(e -> agregarTareaPila());
         btnPop.addActionListener(e -> eliminarTareaPila());
@@ -468,13 +790,22 @@ public class SistemaGestionTareas extends JFrame {
         panelBotones.add(btnPop);
         panelBotones.add(btnPeek);
         
-        // Scroll personalizado
-        JScrollPane scrollPane = new JScrollPane(tablaPila);
-        scrollPane.setBorder(new EmptyBorder(10, 10, 5, 10));
-        scrollPane.getViewport().setBackground(Color.WHITE);
+        // Panel central con filtros y tabla
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.setBackground(Color.WHITE);
         
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(panelBotones, BorderLayout.SOUTH);
+        // Agregar panel de filtros arriba de la tabla
+        panelCentral.add(tablaPila.getFilterPanel(), BorderLayout.NORTH);
+        
+        // Scroll personalizado para la tabla
+        JScrollPane scrollPane = new JScrollPane(tablaPila);
+        scrollPane.setBorder(new EmptyBorder(5, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
+        
+        // Assemblar panel final
+        panel.add(panelBotones, BorderLayout.NORTH);
+        panel.add(panelCentral, BorderLayout.CENTER);
         
         return panel;
     }
@@ -550,17 +881,35 @@ public class SistemaGestionTareas extends JFrame {
     
     private JPanel crearPanelCola() {
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Gestión de Tareas Programadas", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
         
-        // Modelo de tabla
+        // Modelo de tabla NO EDITABLE
         String[] columnas = {"ID", "Descripción", "Departamento", "Urgencia"};
-        modelCola = new DefaultTableModel(columnas, 0);
-        tablaCola = new JTable(modelCola);
+        modelCola = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         
-        // Botones
-        JPanel panelBotones = new JPanel(new FlowLayout());
-        btnEnqueue = crearBotonModerno("Agregar Tarea (Enqueue)", new Color(105, 105, 105));
-        btnDequeue = crearBotonModerno("Eliminar Tarea (Dequeue)", new Color(169, 169, 169));
-        btnFront = crearBotonModerno("Ver Primera Tarea (Front)", new Color(128, 128, 128));
+        // Usar nueva tabla con filtros
+        TableWithFilters tablaCola = new TableWithFilters(modelCola);
+        this.tablaCola = tablaCola;
+        
+        // Panel de botones en la parte SUPERIOR
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        panelBotones.setBackground(new Color(240, 248, 255));
+        panelBotones.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "Acciones", TitledBorder.CENTER, TitledBorder.TOP,
+            new Font("Segoe UI", Font.BOLD, 11), new Color(70, 130, 180)
+        ));
+        
+        btnEnqueue = crearBotonModerno("Agregar Tarea", new Color(144, 238, 144));
+        btnDequeue = crearBotonModerno("Eliminar Tarea", new Color(255, 182, 193));
+        btnFront = crearBotonModerno("Ver Primera", new Color(173, 216, 230));
         
         btnEnqueue.addActionListener(new ActionListener() {
             @Override
@@ -587,8 +936,22 @@ public class SistemaGestionTareas extends JFrame {
         panelBotones.add(btnDequeue);
         panelBotones.add(btnFront);
         
-        panel.add(new JScrollPane(tablaCola), BorderLayout.CENTER);
-        panel.add(panelBotones, BorderLayout.SOUTH);
+        // Panel central con filtros y tabla
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.setBackground(Color.WHITE);
+        
+        // Agregar panel de filtros
+        panelCentral.add(tablaCola.getFilterPanel(), BorderLayout.NORTH);
+        
+        // Scroll para la tabla
+        JScrollPane scrollPane = new JScrollPane(tablaCola);
+        scrollPane.setBorder(new EmptyBorder(5, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
+        
+        // Assemblar panel final
+        panel.add(panelBotones, BorderLayout.NORTH);
+        panel.add(panelCentral, BorderLayout.CENTER);
         
         return panel;
     }
@@ -597,24 +960,37 @@ public class SistemaGestionTareas extends JFrame {
 
     private JPanel crearPanelLista() {
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Gestión de Tareas por Departamento", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
 
-        // Modelo de tabla
-        String[] columnas = {"ID", "Descripción", "Departamento", "Urgencia"};
-        modelLista = new DefaultTableModel(columnas, 0);
-        tablaLista = new JTable(modelLista);
+        // Modelo de tabla NO EDITABLE con columna de empleado asignado
+        String[] columnas = {"ID", "Descripción", "Departamento", "Urgencia", "Empleado Asignado"};
+        modelLista = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         
-        // Panel de búsqueda
-        JPanel panelBusqueda = new JPanel(new FlowLayout());
-        panelBusqueda.add(new JLabel("Buscar por departamento:"));
-        txtBusqueda = new JTextField(15);
-        panelBusqueda.add(txtBusqueda);
+        // Usar nueva tabla con filtros
+        TableWithFilters tablaLista = new TableWithFilters(modelLista);
+        this.tablaLista = tablaLista;
         
-        // Botones
-        JPanel panelBotones = new JPanel(new FlowLayout());
-        btnInsertar = crearBotonModerno("Insertar Tarea", new Color(105, 105, 105));
-        btnEliminar = crearBotonModerno("Eliminar Tarea", new Color(169, 169, 169));
-        btnBuscar = crearBotonModerno("Buscar Tareas", new Color(128, 128, 128));
-        btnVerPorIndice = crearBotonModerno("Ver por Índice", new Color(112, 112, 112)); // Nuevo botón
+        // Panel de botones en la parte SUPERIOR
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        panelBotones.setBackground(new Color(240, 248, 255));
+        panelBotones.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "Acciones", TitledBorder.CENTER, TitledBorder.TOP,
+            new Font("Segoe UI", Font.BOLD, 11), new Color(70, 130, 180)
+        ));
+        
+        btnInsertar = crearBotonModerno("Insertar", new Color(144, 238, 144));
+        btnEliminar = crearBotonModerno("Eliminar", new Color(255, 182, 193));
+        btnBuscar = crearBotonModerno("Buscar", new Color(173, 216, 230));
+        btnVerPorIndice = crearBotonModerno("Ver por Indice", new Color(255, 228, 181));
+        JButton btnActualizarLista = crearBotonModerno("Actualizar", new Color(70, 130, 180));
 
         btnInsertar.addActionListener(new ActionListener() {
             @Override
@@ -643,15 +1019,54 @@ public class SistemaGestionTareas extends JFrame {
                 verTareaPorIndice();
             }
         });
+        
+        btnActualizarLista.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarTablaLista();
+            }
+        });
 
         panelBotones.add(btnInsertar);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnBuscar);
-        panelBotones.add(btnVerPorIndice); // Agrega el botón al panel
-
-        panel.add(new JScrollPane(tablaLista), BorderLayout.CENTER);
-        panel.add(panelBusqueda, BorderLayout.NORTH);
-        panel.add(panelBotones, BorderLayout.SOUTH);
+        panelBotones.add(btnVerPorIndice);
+        panelBotones.add(btnActualizarLista);
+        
+        // Panel de búsqueda personalizada (adicional a los filtros de la tabla)
+        JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelBusqueda.setBackground(new Color(240, 248, 255));
+        panelBusqueda.setBorder(BorderFactory.createTitledBorder("Búsqueda Rápida"));
+        
+        JLabel lblBusqueda = new JLabel("Departamento:");
+        lblBusqueda.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        panelBusqueda.add(lblBusqueda);
+        
+        txtBusqueda = new JTextField(15);
+        txtBusqueda.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        panelBusqueda.add(txtBusqueda);
+        
+        // Panel central con filtros y tabla
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.setBackground(Color.WHITE);
+        
+        // Agregar panel de filtros de la tabla
+        panelCentral.add(tablaLista.getFilterPanel(), BorderLayout.NORTH);
+        
+        // Scroll para la tabla
+        JScrollPane scrollPane = new JScrollPane(tablaLista);
+        scrollPane.setBorder(new EmptyBorder(5, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
+        
+        // Panel superior con botones y búsqueda
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        panelSuperior.add(panelBotones, BorderLayout.CENTER);
+        panelSuperior.add(panelBusqueda, BorderLayout.SOUTH);
+        
+        // Assemblar panel final
+        panel.add(panelSuperior, BorderLayout.NORTH);
+        panel.add(panelCentral, BorderLayout.CENTER);
         
         return panel;
     }
@@ -664,23 +1079,75 @@ public class SistemaGestionTareas extends JFrame {
 
     private JPanel crearPanelGeneral() {
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Vista General de Todas las Tareas", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
 
-        // Modelo de tabla
+        // Modelo de tabla NO EDITABLE
         String[] columnas = {"ID", "Descripción", "Departamento", "Urgencia", "Tipo"};
-        modelGeneral = new DefaultTableModel(columnas, 0);
-        tablaGeneral = new JTable(modelGeneral);
+        modelGeneral = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        // Usar nueva tabla con filtros
+        TableWithFilters tablaGeneral = new TableWithFilters(modelGeneral);
+        this.tablaGeneral = tablaGeneral;
 
-        // Botones
-        JPanel panelBotones = new JPanel(new FlowLayout());
-        btnActualizarGeneral = crearBotonModerno("Actualizar Vista", new Color(105, 105, 105));
-        btnCalcularTiempoTotal = crearBotonModerno("Calcular Tiempo Total (Recursivo)", new Color(169, 169, 169));
-        btnDistribuirTareas = crearBotonModerno("Distribuir Tareas (Divide y Vencerás)", new Color(128, 128, 128));
-        txtBuscarPorId = new JTextField(10);
-        btnBuscarPorId = crearBotonModerno("Buscar por ID", new Color(112, 112, 112));
-        btnOrdenarUrgenciaDepto = crearBotonModerno("Ordenar por Urgencia y Departamento", new Color(96, 96, 96)); // Nuevo
-        btnAgregarDependencia = crearBotonModerno("Agregar Dependencia", new Color(144, 144, 144));
-        btnVerDependencias = crearBotonModerno("Ver Dependencias", new Color(160, 160, 160));
+        // Panel de botones en la parte SUPERIOR - organizado en filas
+        JPanel panelBotones = new JPanel(new GridLayout(2, 1, 5, 5));
+        panelBotones.setBackground(new Color(240, 248, 255));
+        panelBotones.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "Herramientas Avanzadas", TitledBorder.CENTER, TitledBorder.TOP,
+            new Font("Segoe UI", Font.BOLD, 11), new Color(70, 130, 180)
+        ));
+        
+        // Primera fila de botones
+        JPanel fila1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        fila1.setBackground(new Color(240, 248, 255));
+        
+        btnActualizarGeneral = crearBotonModerno("Actualizar", new Color(173, 216, 230));
+        btnCalcularTiempoTotal = crearBotonModerno("Tiempo Total", new Color(255, 228, 181));
+        btnDistribuirTareas = crearBotonModerno("Distribuir", new Color(221, 160, 221));
+        btnOrdenarUrgenciaDepto = crearBotonModerno("Ordenar", new Color(144, 238, 144));
+        
+        fila1.add(btnActualizarGeneral);
+        fila1.add(btnCalcularTiempoTotal);
+        fila1.add(btnDistribuirTareas);
+        fila1.add(btnOrdenarUrgenciaDepto);
+        
+        // Segunda fila de botones
+        JPanel fila2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        fila2.setBackground(new Color(240, 248, 255));
+        
+        // Panel de búsqueda por ID
+        JPanel panelBusquedaId = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        panelBusquedaId.setBackground(new Color(240, 248, 255));
+        
+        JLabel lblId = new JLabel("ID:");
+        lblId.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        txtBuscarPorId = new JTextField(8);
+        txtBuscarPorId.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btnBuscarPorId = crearBotonModerno("Buscar", new Color(255, 182, 193));
+        
+        panelBusquedaId.add(lblId);
+        panelBusquedaId.add(txtBuscarPorId);
+        panelBusquedaId.add(btnBuscarPorId);
+        
+        btnAgregarDependencia = crearBotonModerno("+ Dependencia", new Color(176, 196, 222));
+        btnVerDependencias = crearBotonModerno("Ver Deps", new Color(255, 218, 185));
+        
+        fila2.add(panelBusquedaId);
+        fila2.add(btnAgregarDependencia);
+        fila2.add(btnVerDependencias);
+        
+        panelBotones.add(fila1);
+        panelBotones.add(fila2);
 
+        // Configurar eventos
         btnActualizarGeneral.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -702,7 +1169,6 @@ public class SistemaGestionTareas extends JFrame {
             }
         });
 
-        // Acción para buscar por ID
         btnBuscarPorId.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -730,32 +1196,57 @@ public class SistemaGestionTareas extends JFrame {
                 verDependenciasTarea();
             }
         });
-
-        panelBotones.add(btnActualizarGeneral);
-        panelBotones.add(btnCalcularTiempoTotal);
-        panelBotones.add(btnDistribuirTareas);
-        panelBotones.add(new JLabel("ID:"));
-        panelBotones.add(txtBuscarPorId);
-        panelBotones.add(btnBuscarPorId);
-        panelBotones.add(btnOrdenarUrgenciaDepto); // Agrega el botón
-        panelBotones.add(btnAgregarDependencia);
-        panelBotones.add(btnVerDependencias);
-
-        panel.add(new JScrollPane(tablaGeneral), BorderLayout.CENTER);
-        panel.add(panelBotones, BorderLayout.SOUTH);
+        
+        // Panel central con filtros y tabla
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.setBackground(Color.WHITE);
+        
+        // Agregar panel de filtros
+        panelCentral.add(tablaGeneral.getFilterPanel(), BorderLayout.NORTH);
+        
+        // Scroll para la tabla
+        JScrollPane scrollPane = new JScrollPane(tablaGeneral);
+        scrollPane.setBorder(new EmptyBorder(5, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
+        
+        // Assemblar panel final
+        panel.add(panelBotones, BorderLayout.NORTH);
+        panel.add(panelCentral, BorderLayout.CENTER);
 
         return panel;
     }
     
     private JPanel crearPanelPrioridad() {
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Gestión de Tareas por Prioridad", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
 
+        // Modelo de tabla NO EDITABLE
         String[] columnas = {"ID", "Descripción", "Departamento", "Urgencia", "Prioridad", "Fecha Entrega"};
-        modelPrioridad = new DefaultTableModel(columnas, 0);
-        tablaPrioridad = new JTable(modelPrioridad);
+        modelPrioridad = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        // Usar nueva tabla con filtros
+        TableWithFilters tablaPrioridad = new TableWithFilters(modelPrioridad);
+        this.tablaPrioridad = tablaPrioridad;
 
-        btnVerPrioridad = crearBotonModerno("Ver Tarea con Mayor Prioridad", new Color(105, 105, 105));
-        btnEliminarPrioridad = crearBotonModerno("Eliminar Tarea con Mayor Prioridad", new Color(169, 169, 169)); // Nuevo botón
+        // Panel de botones en la parte SUPERIOR
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        panelBotones.setBackground(new Color(240, 248, 255));
+        panelBotones.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "Acciones", TitledBorder.CENTER, TitledBorder.TOP,
+            new Font("Segoe UI", Font.BOLD, 11), new Color(70, 130, 180)
+        ));
+
+        btnVerPrioridad = crearBotonModerno("Ver Mayor Prioridad", new Color(255, 215, 0));
+        btnEliminarPrioridad = crearBotonModerno("Eliminar Mayor Prioridad", new Color(255, 182, 193));
 
         btnVerPrioridad.addActionListener(new ActionListener() {
             @Override
@@ -771,19 +1262,37 @@ public class SistemaGestionTareas extends JFrame {
             }
         });
 
-        JPanel panelBotones = new JPanel(new FlowLayout());
         panelBotones.add(btnVerPrioridad);
         panelBotones.add(btnEliminarPrioridad);
-
-        panel.add(new JScrollPane(tablaPrioridad), BorderLayout.CENTER);
-        panel.add(panelBotones, BorderLayout.SOUTH);
+        
+        // Panel central con filtros y tabla
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.setBackground(Color.WHITE);
+        
+        // Agregar panel de filtros
+        panelCentral.add(tablaPrioridad.getFilterPanel(), BorderLayout.NORTH);
+        
+        // Scroll para la tabla
+        JScrollPane scrollPane = new JScrollPane(tablaPrioridad);
+        scrollPane.setBorder(new EmptyBorder(5, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
+        
+        // Assemblar panel final
+        panel.add(panelBotones, BorderLayout.NORTH);
+        panel.add(panelCentral, BorderLayout.CENTER);
 
         return panel;
     }
 
     // Nueva lógica para la tabla de prioridades
     private void actualizarTablaPrioridad() {
+        if (modelPrioridad == null) {
+            System.err.println("Advertencia: modelPrioridad es null, omitiendo actualización");
+            return;
+        }
         modelPrioridad.setRowCount(0);
+        
         // Copia la cola para no modificar el orden real
         PriorityQueue<TareaPrioridad> copia = new PriorityQueue<>(colaPrioridad);
         while (!copia.isEmpty()) {
@@ -839,6 +1348,31 @@ public class SistemaGestionTareas extends JFrame {
         JOptionPane.showMessageDialog(this, "Tarea eliminada: " + tarea.getDescripcion(),
                 "Tarea Eliminada", JOptionPane.INFORMATION_MESSAGE);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Modifica actualizarTablas para actualizar también la tabla de prioridades
     // Método duplicado eliminado para evitar error de compilación
@@ -1034,6 +1568,10 @@ public class SistemaGestionTareas extends JFrame {
                 return;
             }
             
+            if (modelLista == null) {
+                System.err.println("Advertencia: modelLista es null en buscarTareasLista");
+                return;
+            }
             modelLista.setRowCount(0);
             for (Tarea tarea : listaTareasDepartamento) {
                 if (tarea.getDepartamento().equalsIgnoreCase(departamento)) {
@@ -1126,6 +1664,10 @@ public class SistemaGestionTareas extends JFrame {
     }
     
     private void actualizarTablaPila() {
+        if (modelPila == null) {
+            System.err.println("Advertencia: modelPila es null, omitiendo actualización");
+            return;
+        }
         modelPila.setRowCount(0);
         for (Tarea tarea : pilaTareasUrgentes) {
             modelPila.addRow(new Object[]{
@@ -1138,6 +1680,10 @@ public class SistemaGestionTareas extends JFrame {
     }
     
     private void actualizarTablaCola() {
+        if (modelCola == null) {
+            System.err.println("Advertencia: modelCola es null, omitiendo actualización");
+            return;
+        }
         modelCola.setRowCount(0);
         for (Tarea tarea : colaTareasProgramadas) {
             modelCola.addRow(new Object[]{
@@ -1150,18 +1696,72 @@ public class SistemaGestionTareas extends JFrame {
     }
     
     private void actualizarTablaLista() {
+        if (modelLista == null) {
+            System.err.println("Advertencia: modelLista es null, omitiendo actualización");
+            return;
+        }
         modelLista.setRowCount(0);
+        
+        // Conjunto para evitar duplicados
+        java.util.Set<String> tareasYaAgregadas = new java.util.HashSet<>();
+        
+        // Función helper para agregar tarea sin duplicados
+        java.util.function.Consumer<Tarea> agregarTarea = tarea -> {
+            if (!tareasYaAgregadas.contains(tarea.getId())) {
+                tareasYaAgregadas.add(tarea.getId());
+                
+                String empleadoAsignado = tarea.getEmpleadoAsignado();
+                String nombreEmpleado = "Sin asignar";
+                
+                // Buscar el nombre del empleado asignado
+                if (empleadoAsignado != null && !empleadoAsignado.isEmpty()) {
+                    java.util.List<Empleado> empleados = new java.util.ArrayList<>();
+                    arbolEmpleados.buscarPorDepartamento("", empleados); // Obtener todos
+                    
+                    for (Empleado emp : empleados) {
+                        if (emp.getId().equals(empleadoAsignado)) {
+                            nombreEmpleado = emp.getNombre();
+                            break;
+                        }
+                    }
+                }
+                
+                modelLista.addRow(new Object[]{
+                    tarea.getId(),
+                    tarea.getDescripcion(),
+                    tarea.getDepartamento(),
+                    tarea.getUrgencia(),
+                    nombreEmpleado
+                });
+            }
+        };
+        
+        // Agregar tareas de todas las estructuras de datos
+        for (Tarea tarea : pilaTareasUrgentes) {
+            agregarTarea.accept(tarea);
+        }
+        
+        for (Tarea tarea : colaTareasProgramadas) {
+            agregarTarea.accept(tarea);
+        }
+        
         for (Tarea tarea : listaTareasDepartamento) {
-            modelLista.addRow(new Object[]{
-                tarea.getId(),
-                tarea.getDescripcion(),
-                tarea.getDepartamento(),
-                tarea.getUrgencia()
-            });
+            agregarTarea.accept(tarea);
+        }
+        
+        // Agregar tareas de la cola de prioridad
+        for (TareaPrioridad tareaPrior : colaPrioridad) {
+            if (tareaPrior != null) {
+                agregarTarea.accept(tareaPrior);
+            }
         }
     }
     
     private void actualizarTablaGeneral() {
+        if (modelGeneral == null) {
+            System.err.println("Advertencia: modelGeneral es null, omitiendo actualización");
+            return;
+        }
         modelGeneral.setRowCount(0);
         
         // Agregar tareas urgentes
@@ -1200,13 +1800,66 @@ public class SistemaGestionTareas extends JFrame {
     
 
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     private void verTareaPorIndice() {
         try {
             String input = JOptionPane.showInputDialog(this, "Introduce el índice de la tarea (0 a " + (listaTareasDepartamento.size() - 1) + "):");
             if (input == null) return;
             int idx = Integer.parseInt(input.trim());
             if (idx < 0 || idx >= listaTareasDepartamento.size()) {
-                JOptionPane.showMessageDialog(this, "Índice fuera de rango.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Indice fuera de rango.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             Tarea tarea = listaTareasDepartamento.get(idx);
@@ -1216,9 +1869,9 @@ public class SistemaGestionTareas extends JFrame {
                     "Descripción: " + tarea.getDescripcion() + "\n" +
                     "Departamento: " + tarea.getDepartamento() + "\n" +
                     "Urgencia: " + tarea.getUrgencia(),
-                    "Tarea por Índice", JOptionPane.INFORMATION_MESSAGE);
+                    "Tarea por Indice", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al acceder por índice: " + e.getMessage(),
+            JOptionPane.showMessageDialog(this, "Error al acceder por indice: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -1226,21 +1879,35 @@ public class SistemaGestionTareas extends JFrame {
     // Agrega este método para crear el panel de empleados
     private JPanel crearPanelEmpleados() {
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Gestión de Empleados", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
 
-        // Tabla de empleados
-        String[] columnas = {"ID", "Nombre", "Departamento"};
-        modelEmpleados = new DefaultTableModel(columnas, 0);
-        tablaEmpleados = new JTable(modelEmpleados);
+        // Modelo de tabla NO EDITABLE - Incluyendo columna de tareas
+        String[] columnas = {"ID", "Nombre", "Departamento", "Tareas Asignadas"};
+        modelEmpleados = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        // Usar nueva tabla con filtros
+        TableWithFilters tablaEmpleados = new TableWithFilters(modelEmpleados);
+        this.tablaEmpleados = tablaEmpleados;
 
-        // Panel de búsqueda
-        JPanel panelBusqueda = new JPanel(new FlowLayout());
-        panelBusqueda.add(new JLabel("Buscar por departamento:"));
-        txtBusquedaEmpleado = new JTextField(15);
-        panelBusqueda.add(txtBusquedaEmpleado);
+        // Panel de botones en la parte SUPERIOR
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        panelBotones.setBackground(new Color(240, 248, 255));
+        panelBotones.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(70, 130, 180), 1),
+            "Acciones", TitledBorder.CENTER, TitledBorder.TOP,
+            new Font("Segoe UI", Font.BOLD, 11), new Color(70, 130, 180)
+        ));
 
-        btnBuscarEmpleado = crearBotonModerno("Buscar", new Color(105, 105, 105));
-        btnMostrarArbol = crearBotonModerno("Mostrar estructura del árbol", new Color(169, 169, 169));
-        btnInsertarEmpleado = crearBotonModerno("Insertar Empleado (Solo Jefe)", new Color(128, 128, 128));
+        btnBuscarEmpleado = crearBotonModerno("Buscar", new Color(173, 216, 230));
+        btnMostrarArbol = crearBotonModerno("Ver Arbol", new Color(144, 238, 144));
+        btnInsertarEmpleado = crearBotonModerno("Insertar (Jefe)", new Color(255, 228, 181));
 
         btnBuscarEmpleado.addActionListener(new ActionListener() {
             @Override
@@ -1263,12 +1930,44 @@ public class SistemaGestionTareas extends JFrame {
             }
         });
 
-        panelBusqueda.add(btnBuscarEmpleado);
-        panelBusqueda.add(btnMostrarArbol);
-        panelBusqueda.add(btnInsertarEmpleado); // Agrega el botón al panel de búsqueda
-
-        panel.add(panelBusqueda, BorderLayout.NORTH);
-        panel.add(new JScrollPane(tablaEmpleados), BorderLayout.CENTER);
+        panelBotones.add(btnBuscarEmpleado);
+        panelBotones.add(btnMostrarArbol);
+        panelBotones.add(btnInsertarEmpleado);
+        
+        // Panel de búsqueda personalizada (adicional a los filtros de la tabla)
+        JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelBusqueda.setBackground(new Color(240, 248, 255));
+        panelBusqueda.setBorder(BorderFactory.createTitledBorder("Búsqueda Rápida"));
+        
+        JLabel lblBusqueda = new JLabel("Departamento:");
+        lblBusqueda.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        panelBusqueda.add(lblBusqueda);
+        
+        txtBusquedaEmpleado = new JTextField(15);
+        txtBusquedaEmpleado.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        panelBusqueda.add(txtBusquedaEmpleado);
+        
+        // Panel central con filtros y tabla
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.setBackground(Color.WHITE);
+        
+        // Agregar panel de filtros de la tabla
+        panelCentral.add(tablaEmpleados.getFilterPanel(), BorderLayout.NORTH);
+        
+        // Scroll para la tabla
+        JScrollPane scrollPane = new JScrollPane(tablaEmpleados);
+        scrollPane.setBorder(new EmptyBorder(5, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
+        
+        // Panel superior con botones y búsqueda
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        panelSuperior.add(panelBotones, BorderLayout.CENTER);
+        panelSuperior.add(panelBusqueda, BorderLayout.SOUTH);
+        
+        // Assemblar panel final
+        panel.add(panelSuperior, BorderLayout.NORTH);
+        panel.add(panelCentral, BorderLayout.CENTER);
 
         return panel;
     }
@@ -1276,6 +1975,10 @@ public class SistemaGestionTareas extends JFrame {
     // Agrega este método para buscar empleados por departamento
     private void buscarEmpleadosPorDepartamento() {
         String departamento = txtBusquedaEmpleado.getText().trim();
+        if (modelEmpleados == null) {
+            System.err.println("Advertencia: modelEmpleados es null en buscarEmpleadosPorDepartamento");
+            return;
+        }
         modelEmpleados.setRowCount(0);
         if (departamento.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese un departamento para buscar.", "Campo vacío", JOptionPane.WARNING_MESSAGE);
@@ -1291,12 +1994,20 @@ public class SistemaGestionTareas extends JFrame {
         }
     }
 
-    // Agrega este método para mostrar la estructura del árbol (inorden)
+    // Agrega este método para mostrar la estructura del árbol con interfaz moderna
     private void mostrarEstructuraArbol() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Estructura del árbol (inorden):\n");
-        recorrerInorden(arbolEmpleados.getRaiz(), sb);
-        JOptionPane.showMessageDialog(this, sb.toString(), "Árbol de empleados (inorden)", JOptionPane.INFORMATION_MESSAGE);
+        if (arbolEmpleados.estaVacio()) {
+            JOptionPane.showMessageDialog(this, 
+                "No hay empleados registrados en el sistema.\n\n" +
+                "Agregue empleados primero usando el boton 'Insertar'.", 
+                "Arbol Vacio", 
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Crear y mostrar la ventana moderna del árbol
+        ArbolEmpleadosViewer viewer = new ArbolEmpleadosViewer(arbolEmpleados);
+        viewer.setVisible(true);
     }
 
     // Método recursivo para recorrer el árbol inorden
@@ -1382,7 +2093,7 @@ public class SistemaGestionTareas extends JFrame {
     // Muestra la distribución de tareas usando divide y vencerás
     private void mostrarDistribucionDivideVenceras() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Distribución de tareas (Divide y Vencerás):\n");
+        sb.append("Distribución de tareas:\n");
         List<Tarea> todas = new ArrayList<>();
         todas.addAll(pilaTareasUrgentes);
         todas.addAll(colaTareasProgramadas);
@@ -1437,6 +2148,10 @@ public class SistemaGestionTareas extends JFrame {
             .thenComparing(Tarea::getDepartamento)
         );
 
+        if (modelGeneral == null) {
+            System.err.println("Advertencia: modelGeneral es null en vista general");
+            return;
+        }
         modelGeneral.setRowCount(0);
         for (Tarea tarea : todas) {
             String tipo = "Departamento";
@@ -1524,7 +2239,8 @@ public class SistemaGestionTareas extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                new SistemaGestionTareas();
+                // Abrir pantalla de login en lugar del sistema directamente
+                new LoginFrame().setVisible(true);
             } catch (Exception e) {
                 System.err.println("Error al inicializar la aplicación: " + e.getMessage());
                 e.printStackTrace();
@@ -1535,11 +2251,42 @@ public class SistemaGestionTareas extends JFrame {
     private void mostrarTodosEmpleados() {
         if (modelEmpleados == null) return;
         modelEmpleados.setRowCount(0);
+        
+        // Obtener empleados filtrados segun el rol del usuario actual
+        if (usuarioActual == null) return;
+        
+        String departamentoUsuario = usuarioActual.getDepartamento();
         List<Empleado> resultado = new ArrayList<>();
         arbolEmpleados.buscarPorDepartamento("", resultado); // "" para traer todos
+        
         if (resultado.isEmpty()) return;
+        
         for (Empleado emp : resultado) {
-            modelEmpleados.addRow(new Object[]{emp.getId(), emp.getNombre(), emp.getDepartamento()});
+            // Aplicar filtros segun el rol
+            boolean mostrarEmpleado = false;
+            
+            if (usuarioActual.getRol() == Usuario.Rol.CEO || usuarioActual.getRol() == Usuario.Rol.JEFE) {
+                // CEO y JEFE ven todos los empleados
+                mostrarEmpleado = true;
+            } else if (usuarioActual.getRol() == Usuario.Rol.JEFE_DEPARTAMENTO) {
+                // JEFE_DEPARTAMENTO solo ve empleados de su departamento
+                mostrarEmpleado = emp.getDepartamento().equals(departamentoUsuario);
+            } else {
+                // EMPLEADO solo se ve a si mismo
+                mostrarEmpleado = emp.getId() == usuarioActual.getId();
+            }
+            
+            if (mostrarEmpleado) {
+                // Contar tareas asignadas a este empleado
+                int tareasAsignadas = contarTareasEmpleado(emp.getId());
+                
+                modelEmpleados.addRow(new Object[]{
+                    emp.getId(),
+                    emp.getNombre(),
+                    emp.getDepartamento(),
+                    tareasAsignadas + " tareas"
+                });
+            }
         }
     }
 
@@ -1554,6 +2301,1285 @@ public class SistemaGestionTareas extends JFrame {
     }
     return "E" + (max + 1);
 }
+
+    /**
+     * Cuenta las tareas relacionadas con un empleado específico según su departamento
+     */
+    private int contarTareasEmpleado(String empleadoId) {
+        int contador = 0;
+        String departamentoEmpleado = null;
+        
+        // Buscar el departamento del empleado
+        Empleado empleado = arbolEmpleados.buscarPorId(empleadoId);
+        if (empleado != null) {
+            departamentoEmpleado = empleado.getDepartamento();
+        }
+        
+        if (departamentoEmpleado == null) return 0;
+        
+        // Contar tareas por departamento en estructuras locales
+        
+        // Buscar en pila de tareas urgentes
+        for (Tarea tarea : pilaTareasUrgentes) {
+            if (departamentoEmpleado.equals(tarea.getDepartamento())) {
+                contador++;
+            }
+        }
+        
+        // Buscar en cola de tareas programadas
+        for (Tarea tarea : colaTareasProgramadas) {
+            if (departamentoEmpleado.equals(tarea.getDepartamento())) {
+                contador++;
+            }
+        }
+        
+        // Buscar en lista de tareas departamentales
+        for (Tarea tarea : listaTareasDepartamento) {
+            if (departamentoEmpleado.equals(tarea.getDepartamento())) {
+                contador++;
+            }
+        }
+        
+        // Buscar en cola de prioridad
+        for (TareaPrioridad tareaPrioridad : colaPrioridad) {
+            if (departamentoEmpleado.equals(tareaPrioridad.getDepartamento())) {
+                contador++;
+            }
+        }
+        
+        return contador;
+    }
+
+    // ===============================================
+    // METODOS PARA INTERFACES ESPECIFICAS POR ROL
+    // ===============================================
+    
+    /**
+     * Panel de administración para el jefe general
+     */
+    private JPanel crearPanelAdministracion() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Panel de Administración - Jefe General", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
+        
+        // Panel de estadísticas
+        JPanel panelEstadisticas = new JPanel(new GridLayout(3, 3, 10, 10));
+        panelEstadisticas.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
+        // Botones de administración
+        JButton btnReportes = crearBotonModerno("Generar Reportes", new Color(34, 139, 34));
+        JButton btnEstadisticas = crearBotonModerno("Ver Estadísticas", new Color(255, 140, 0));
+        JButton btnFiltros = crearBotonModerno("Filtros Avanzados", new Color(70, 130, 180));
+        JButton btnExportar = crearBotonModerno("💾 Exportar Datos", new Color(128, 0, 128));
+        JButton btnConfiguracion = crearBotonModerno("⚙️ Configuración", new Color(220, 20, 60));
+        JButton btnRespaldos = crearBotonModerno("💿 Respaldos", new Color(105, 105, 105));
+        JButton btnGestionUsuarios = crearBotonModerno("👥 Gestión de Usuarios", new Color(72, 61, 139));
+        JButton btnCrearCuentas = crearBotonModerno("🆔 Crear Cuentas", new Color(255, 99, 71));
+        JButton btnResetearSistema = crearBotonModerno("🔄 Reiniciar Sistema", new Color(178, 34, 34));
+        
+        panelEstadisticas.add(btnReportes);
+        panelEstadisticas.add(btnEstadisticas);
+        panelEstadisticas.add(btnFiltros);
+        panelEstadisticas.add(btnExportar);
+        panelEstadisticas.add(btnConfiguracion);
+        panelEstadisticas.add(btnRespaldos);
+        panelEstadisticas.add(btnGestionUsuarios);
+        panelEstadisticas.add(btnCrearCuentas);
+        panelEstadisticas.add(btnResetearSistema);
+        
+        // Eventos
+        btnEstadisticas.addActionListener(e -> mostrarEstadisticasGenerales());
+        btnFiltros.addActionListener(e -> abrirFiltrosAvanzados());
+        btnReportes.addActionListener(e -> generarReporteCompleto());
+        btnGestionUsuarios.addActionListener(e -> abrirGestionUsuarios());
+        btnCrearCuentas.addActionListener(e -> crearCuentasParaEmpleados());
+        btnResetearSistema.addActionListener(e -> confirmarReseteoSistema());
+        
+        panel.add(panelEstadisticas, BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Crea el panel ejecutivo especial para CEO con controles avanzados
+     */
+    private JPanel crearPanelEjecutivo() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Panel Ejecutivo - CEO", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(139, 0, 0)));
+        
+        // Panel de controles ejecutivos
+        JPanel panelControles = new JPanel(new GridLayout(4, 3, 10, 10));
+        panelControles.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
+        // Botones de control ejecutivo
+        JButton btnDashboard = crearBotonModerno("Dashboard Ejecutivo", new Color(139, 0, 0));
+        JButton btnAnalisis = crearBotonModerno("Analisis Avanzado", new Color(25, 25, 112));
+        JButton btnRendimiento = crearBotonModerno("Rendimiento Global", new Color(0, 100, 0));
+        JButton btnFinanzas = crearBotonModerno("Control Financiero", new Color(184, 134, 11));
+        JButton btnRecursosHumanos = crearBotonModerno("Recursos Humanos", new Color(72, 61, 139));
+        JButton btnEstrategia = crearBotonModerno("Planificacion Estrategica", new Color(128, 0, 128));
+        JButton btnAuditoria = crearBotonModerno("Auditoria de Sistema", new Color(220, 20, 60));
+        JButton btnSeguridad = crearBotonModerno("Seguridad y Accesos", new Color(105, 105, 105));
+        JButton btnReportesEjecutivos = crearBotonModerno("Reportes Ejecutivos", new Color(139, 69, 19));
+        JButton btnConfigGlobal = crearBotonModerno("Configuracion Global", new Color(47, 79, 79));
+        JButton btnBackupCompleto = crearBotonModerno("Backup Completo", new Color(85, 107, 47));
+        JButton btnOverride = crearBotonModerno("Override del Sistema", new Color(178, 34, 34));
+        
+        panelControles.add(btnDashboard);
+        panelControles.add(btnAnalisis);
+        panelControles.add(btnRendimiento);
+        panelControles.add(btnFinanzas);
+        panelControles.add(btnRecursosHumanos);
+        panelControles.add(btnEstrategia);
+        panelControles.add(btnAuditoria);
+        panelControles.add(btnSeguridad);
+        panelControles.add(btnReportesEjecutivos);
+        panelControles.add(btnConfigGlobal);
+        panelControles.add(btnBackupCompleto);
+        panelControles.add(btnOverride);
+        
+        // Eventos ejecutivos
+        btnDashboard.addActionListener(e -> JOptionPane.showMessageDialog(this, "Dashboard Ejecutivo - Funcionalidad en desarrollo", "CEO", JOptionPane.INFORMATION_MESSAGE));
+        btnAnalisis.addActionListener(e -> JOptionPane.showMessageDialog(this, "Analisis Avanzado - Funcionalidad en desarrollo", "CEO", JOptionPane.INFORMATION_MESSAGE));
+        btnRendimiento.addActionListener(e -> JOptionPane.showMessageDialog(this, "Rendimiento Global - Funcionalidad en desarrollo", "CEO", JOptionPane.INFORMATION_MESSAGE));
+        btnAuditoria.addActionListener(e -> JOptionPane.showMessageDialog(this, "Auditoria Completa - Funcionalidad en desarrollo", "CEO", JOptionPane.INFORMATION_MESSAGE));
+        btnOverride.addActionListener(e -> JOptionPane.showMessageDialog(this, "Override del Sistema - Funcionalidad restringida", "CEO", JOptionPane.WARNING_MESSAGE));
+        
+        panel.add(panelControles, BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Abre la ventana de gestión de usuarios (solo para jefe o CEO)
+     */
+    private void abrirGestionUsuarios() {
+        if (!usuarioActual.esJefe() && !usuarioActual.esCEO()) {
+            JOptionPane.showMessageDialog(this, 
+                "Acceso denegado. Solo el jefe general o CEO pueden gestionar usuarios.",
+                "Sin permisos", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            GestionUsuariosPanel gestionPanel = new GestionUsuariosPanel();
+            gestionPanel.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error al abrir la gestión de usuarios: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * Crea cuentas automáticamente para todos los empleados que no tienen cuenta
+     */
+    private void crearCuentasParaEmpleados() {
+        if (!usuarioActual.esJefe() && !usuarioActual.esCEO()) {
+            JOptionPane.showMessageDialog(this, 
+                "Acceso denegado. Solo el jefe general o CEO pueden crear cuentas.",
+                "Sin permisos", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        UsuarioService usuarioService = UsuarioService.getInstance();
+        List<Empleado> todosLosEmpleados = new ArrayList<>();
+        arbolEmpleados.buscarPorDepartamento(null, todosLosEmpleados); // null = obtener todos
+        
+        int cuentasCreadas = 0;
+        StringBuilder reporte = new StringBuilder();
+        reporte.append("🆔 REPORTE DE CREACIÓN DE CUENTAS\n");
+        reporte.append("=".repeat(50)).append("\n\n");
+        
+        for (Empleado empleado : todosLosEmpleados) {
+            // Generar contraseña temporal basada en el ID del empleado
+            String passwordTemporal = "temp" + empleado.getId().toLowerCase();
+            
+            if (usuarioService.crearCuentaEmpleado(empleado, passwordTemporal)) {
+                cuentasCreadas++;
+                reporte.append(String.format("%s (%s) - Usuario: %s, Password: %s\n", 
+                    empleado.getNombre(), empleado.getId(), 
+                    generarUsernameEmpleado(empleado), passwordTemporal));
+            } else {
+                reporte.append(String.format("⚠️ %s (%s) - Ya tiene cuenta o error\n", 
+                    empleado.getNombre(), empleado.getId()));
+            }
+        }
+        
+        reporte.append("\n").append("=".repeat(50)).append("\n");
+        reporte.append(String.format("RESUMEN: %d nuevas cuentas creadas de %d empleados", 
+            cuentasCreadas, todosLosEmpleados.size()));
+        
+        // Mostrar reporte en ventana
+        JTextArea areaReporte = new JTextArea(reporte.toString());
+        areaReporte.setFont(new Font("Courier New", Font.PLAIN, 12));
+        areaReporte.setEditable(false);
+        
+        JScrollPane scroll = new JScrollPane(areaReporte);
+        scroll.setPreferredSize(new Dimension(600, 400));
+        
+        JOptionPane.showMessageDialog(this, scroll, 
+            "Reporte de Creación de Cuentas", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Genera un username para un empleado basado en su nombre
+     */
+    private String generarUsernameEmpleado(Empleado empleado) {
+        String nombre = empleado.getNombre().toLowerCase().replaceAll("\\s+", ".");
+        return nombre.replaceAll("[^a-z.]", "");
+    }
+    
+    /**
+     * Confirma y ejecuta el reseteo del sistema
+     */
+    private void confirmarReseteoSistema() {
+        if (!usuarioActual.esJefe()) {
+            JOptionPane.showMessageDialog(this, 
+                "Acceso denegado. Solo el jefe general puede resetear el sistema.",
+                "Sin permisos", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String[] opciones = {"Resetear Todo", "Solo Tablas", "Cancelar"};
+        int opcion = JOptionPane.showOptionDialog(this,
+            "⚠️ ADVERTENCIA: Esta acción eliminará datos del sistema.\n\n" +
+            "Seleccione el tipo de reseteo:\n" +
+            "• Resetear Todo: Limpia todas las tablas y reinicia el sistema\n" +
+            "• Solo Tablas: Limpia solo las tablas de tareas\n" +
+            "• Cancelar: No hacer nada",
+            "Confirmar Reseteo del Sistema",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            opciones,
+            opciones[2]);
+        
+        switch (opcion) {
+            case 0: // Resetear Todo
+                resetearSistemaCompleto();
+                break;
+            case 1: // Solo Tablas
+                resetearSoloTablas();
+                break;
+            default: // Cancelar
+                JOptionPane.showMessageDialog(this, "Operación cancelada", 
+                    "Cancelado", JOptionPane.INFORMATION_MESSAGE);
+                break;
+        }
+    }
+    
+    /**
+     * Resetea completamente el sistema
+     */
+    private void resetearSistemaCompleto() {
+        String confirmacion = JOptionPane.showInputDialog(this,
+            "⚠️ CONFIRMACIÓN FINAL\n\n" +
+            "Para confirmar el reseteo completo del sistema,\n" +
+            "escriba exactamente: RESETEAR\n\n" +
+            "Esto eliminará:\n" +
+            "• Todas las tareas\n" +
+            "• Todas las estructuras de datos\n" +
+            "• Configuraciones (mantendrá usuarios)\n",
+            "Confirmación de Reseteo");
+        
+        if ("RESETEAR".equals(confirmacion)) {
+            // Limpiar modelos de tablas
+            if (modelPila != null) modelPila.setRowCount(0);
+            if (modelCola != null) modelCola.setRowCount(0);
+            if (modelLista != null) modelLista.setRowCount(0);
+            if (modelGeneral != null) modelGeneral.setRowCount(0);
+            if (modelPrioridad != null) modelPrioridad.setRowCount(0);
+            
+            JOptionPane.showMessageDialog(this,
+                "Sistema reseteado completamente.\n" +
+                "Todas las estructuras de datos han sido limpiadas.",
+                "Reseteo Completado", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Confirmación incorrecta. Operación cancelada.",
+                "Cancelado", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
+    /**
+     * Resetea solo las tablas de tareas
+     */
+    private void resetearSoloTablas() {
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+            "¿Está seguro de limpiar solo las tablas de tareas?\n" +
+            "Esta acción eliminará todas las tareas pero mantendrá empleados y usuarios.",
+            "Confirmar Limpieza de Tablas",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            // Limpiar solo modelos de tablas de tareas
+            if (modelPila != null) modelPila.setRowCount(0);
+            if (modelCola != null) modelCola.setRowCount(0);
+            if (modelLista != null) modelLista.setRowCount(0);
+            if (modelGeneral != null) modelGeneral.setRowCount(0);
+            if (modelPrioridad != null) modelPrioridad.setRowCount(0);
+            
+            JOptionPane.showMessageDialog(this,
+                "Tablas de tareas limpiadas exitosamente.\n" +
+                "Los empleados y usuarios se mantuvieron intactos.",
+                "Limpieza Completada", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    /**
+     * Panel para gestión de departamento (jefe de departamento)
+     */
+    private JPanel crearPanelGestionDepartamento() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Gestión de Departamento - " + usuarioActual.getDepartamento(), 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
+        
+        JPanel panelBotones = new JPanel(new GridLayout(2, 2, 10, 10));
+        panelBotones.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        JButton btnCrearTarea = crearBotonModerno("➕ Crear Nueva Tarea", new Color(34, 139, 34));
+        JButton btnAsignarTarea = crearBotonModerno("Asignar Tarea", new Color(70, 130, 180));
+        JButton btnRevisarCompletadas = crearBotonModerno("Revisar Completadas", new Color(255, 140, 0));
+        JButton btnEstadisticasDpto = crearBotonModerno("📊 Estadísticas Depto", new Color(128, 0, 128));
+        
+        panelBotones.add(btnCrearTarea);
+        panelBotones.add(btnAsignarTarea);
+        panelBotones.add(btnRevisarCompletadas);
+        panelBotones.add(btnEstadisticasDpto);
+        
+        // Eventos
+        btnCrearTarea.addActionListener(e -> crearNuevaTareaDepartamento());
+        btnAsignarTarea.addActionListener(e -> asignarTareaAEmpleado());
+        btnRevisarCompletadas.addActionListener(e -> revisarTareasCompletadas());
+        
+        panel.add(panelBotones, BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Panel de tareas para empleado
+     */
+    private JPanel crearPanelMisTareas() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Mis Tareas Asignadas", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
+        
+        // Tabla para mostrar solo las tareas del empleado
+        String[] columnas = {"ID", "Descripción", "Urgencia", "Horas Est.", "Estado", "Tiempo Restante"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        JTable tabla = new JTable(modelo);
+        personalizarTabla(tabla);
+        
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        scrollPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        // Panel de botones para empleado
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        JButton btnActualizarTareas = crearBotonModerno("Actualizar Tareas", new Color(70, 130, 180));
+        
+        btnActualizarTareas.addActionListener(e -> {
+            modelo.setRowCount(0);
+            cargarTareasEmpleado(modelo);
+            JOptionPane.showMessageDialog(this, "Lista de tareas actualizada", "Actualización", JOptionPane.INFORMATION_MESSAGE);
+        });
+        
+        panelBotones.add(btnActualizarTareas);
+        
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(panelBotones, BorderLayout.SOUTH);
+        
+        // Cargar tareas del empleado
+        cargarTareasEmpleado(modelo);
+        
+        return panel;
+    }
+    
+    /**
+     * Panel para completar tareas (empleado)
+     */
+    private JPanel crearPanelCompletarTareas() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Completar Tareas", 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
+        
+        JPanel panelFormulario = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        
+        // Campo ID de tarea
+        gbc.gridx = 0; gbc.gridy = 0;
+        panelFormulario.add(new JLabel("ID de Tarea:"), gbc);
+        
+        JTextField txtIdTarea = new JTextField(15);
+        gbc.gridx = 1; gbc.gridy = 0;
+        panelFormulario.add(txtIdTarea, gbc);
+        
+        // Comentarios
+        gbc.gridx = 0; gbc.gridy = 1;
+        panelFormulario.add(new JLabel("Comentarios:"), gbc);
+        
+        JTextArea txtComentarios = new JTextArea(4, 15);
+        txtComentarios.setBorder(BorderFactory.createLoweredBevelBorder());
+        JScrollPane scrollComentarios = new JScrollPane(txtComentarios);
+        gbc.gridx = 1; gbc.gridy = 1;
+        panelFormulario.add(scrollComentarios, gbc);
+        
+        // Botón completar
+        JButton btnCompletar = crearBotonModerno("Marcar como Completada", new Color(34, 139, 34));
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1;
+        panelFormulario.add(btnCompletar, gbc);
+        
+        // Botón actualizar lista
+        JButton btnActualizarCompletadas = crearBotonModerno("Actualizar Lista", new Color(70, 130, 180));
+        gbc.gridx = 1; gbc.gridy = 2; gbc.gridwidth = 1;
+        panelFormulario.add(btnActualizarCompletadas, gbc);
+        
+        btnCompletar.addActionListener(e -> completarTarea(txtIdTarea.getText(), txtComentarios.getText()));
+        btnActualizarCompletadas.addActionListener(e -> 
+            JOptionPane.showMessageDialog(this, "Lista de tareas actualizada", "Actualización", JOptionPane.INFORMATION_MESSAGE));
+        
+        panel.add(panelFormulario, BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Versiones específicas de paneles para diferentes roles
+     */
+    private JPanel crearPanelListaDepartamento() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Tareas del Departamento: " + usuarioActual.getDepartamento(), 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
+
+        // Modelo de tabla con columna adicional para empleado asignado
+        String[] columnas = {"ID", "Descripción", "Urgencia", "Horas Est.", "Empleado Asignado"};
+        DefaultTableModel modelListaDepartamento = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        JTable tablaListaDepartamento = new JTable(modelListaDepartamento);
+        personalizarTabla(tablaListaDepartamento);
+        
+        // Panel de botones
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        panelBotones.setBackground(new Color(240, 248, 255));
+        
+        JButton btnActualizar = crearBotonModerno("🔄 Actualizar", new Color(70, 130, 180));
+        JButton btnCrearTarea = crearBotonModerno("➕ Nueva Tarea", new Color(34, 139, 34));
+        JButton btnAsignarTarea = crearBotonModerno("👥 Asignar Tarea", new Color(255, 140, 0));
+        
+        panelBotones.add(btnActualizar);
+        panelBotones.add(btnCrearTarea);
+        panelBotones.add(btnAsignarTarea);
+        
+        // Eventos
+        btnActualizar.addActionListener(e -> cargarTareasDepartamentoConAsignacion(modelListaDepartamento));
+        btnCrearTarea.addActionListener(e -> crearNuevaTareaDepartamento());
+        btnAsignarTarea.addActionListener(e -> asignarTareaAEmpleado());
+        
+        // Cargar tareas del departamento
+        cargarTareasDepartamentoConAsignacion(modelListaDepartamento);
+        
+        JScrollPane scrollPane = new JScrollPane(tablaListaDepartamento);
+        scrollPane.setPreferredSize(new Dimension(800, 400));
+        
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(panelBotones, BorderLayout.SOUTH);
+        return panel;
+    }
+    
+    /**
+     * Carga tareas del departamento mostrando el empleado asignado
+     */
+    private void cargarTareasDepartamentoConAsignacion(DefaultTableModel modelo) {
+        modelo.setRowCount(0); // Limpiar tabla
+        for (Tarea tarea : listaTareasDepartamento) {
+            if (tarea.getDepartamento().equals(usuarioActual.getDepartamento())) {
+                String empleadoAsignado = tarea.getEmpleadoAsignado();
+                String nombreEmpleado = "Sin asignar";
+                
+                // Buscar el nombre del empleado asignado
+                if (empleadoAsignado != null && !empleadoAsignado.isEmpty()) {
+                    java.util.List<Empleado> empleados = new java.util.ArrayList<>();
+                    arbolEmpleados.buscarPorDepartamento("", empleados); // Obtener todos
+                    
+                    for (Empleado emp : empleados) {
+                        if (emp.getId().equals(empleadoAsignado)) {
+                            nombreEmpleado = emp.getNombre();
+                            break;
+                        }
+                    }
+                }
+                
+                modelo.addRow(new Object[]{
+                    tarea.getId(),
+                    tarea.getDescripcion(),
+                    tarea.getUrgencia(),
+                    tarea.getHorasEstimadas() + " hrs",
+                    nombreEmpleado
+                });
+            }
+        }
+    }
+    
+    /**
+     * Método genérico para cargar tareas del departamento
+     */
+    private void cargarTareasDepartamento(DefaultTableModel modelo) {
+        cargarTareasDepartamentoConAsignacion(modelo);
+    }
+    
+    private JPanel crearPanelPrioridadDepartamento() {
+        // Similar al panel prioridad pero filtrado por departamento
+        return crearPanelPrioridad(); // Por ahora reutilizamos
+    }
+    
+    private JPanel crearPanelEmpleadosDepartamento() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder(null, "Empleados del Departamento: " + usuarioActual.getDepartamento(), 
+                TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), new Color(70, 130, 180)));
+        
+        // Modelo de tabla para empleados del departamento
+        String[] columnas = {"ID", "Nombre", "Departamento", "Estado"};
+        DefaultTableModel modelEmpleadosDepartamento = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Tabla no editable
+            }
+        };
+        
+        // Cargar solo empleados del departamento del jefe
+        cargarEmpleadosPorDepartamento(modelEmpleadosDepartamento);
+        
+        TableWithFilters tablaEmpleadosDepartamento = new TableWithFilters(modelEmpleadosDepartamento);
+        personalizarTabla(tablaEmpleadosDepartamento);
+        
+        JScrollPane scrollEmpleados = new JScrollPane(tablaEmpleadosDepartamento);
+        scrollEmpleados.setPreferredSize(new Dimension(800, 400));
+        
+        // Panel de botones para jefe de departamento
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        JButton btnAsignarTarea = crearBotonModerno("Asignar Tarea", new Color(34, 139, 34));
+        JButton btnVerRendimiento = crearBotonModerno("Ver Rendimiento", new Color(255, 140, 0));
+        JButton btnActualizar = crearBotonModerno("Actualizar", new Color(70, 130, 180));
+        
+        panelBotones.add(btnAsignarTarea);
+        panelBotones.add(btnVerRendimiento);
+        panelBotones.add(btnActualizar);
+        
+        // Eventos
+        btnAsignarTarea.addActionListener(e -> asignarTareaAEmpleado());
+        btnActualizar.addActionListener(e -> {
+            modelEmpleadosDepartamento.setRowCount(0);
+            cargarEmpleadosPorDepartamento(modelEmpleadosDepartamento);
+        });
+        
+        panel.add(scrollEmpleados, BorderLayout.CENTER);
+        panel.add(panelBotones, BorderLayout.SOUTH);
+        
+        return panel;
+    }
+    
+    /**
+     * Carga empleados filtrados por departamento del usuario actual
+     */
+    private void cargarEmpleadosPorDepartamento(DefaultTableModel modelo) {
+        String departamentoActual = usuarioActual.getDepartamento();
+        
+        // Crear lista para almacenar empleados del departamento
+        List<Empleado> empleadosDepartamento = new ArrayList<>();
+        
+        // Debug: Imprimir información de búsqueda
+        System.out.println("🔍 DEBUG: Buscando empleados para departamento: " + departamentoActual);
+        
+        // Buscar empleados del departamento actual
+        arbolEmpleados.buscarPorDepartamento(departamentoActual, empleadosDepartamento);
+        
+        // Debug: Mostrar cuántos empleados se encontraron
+        System.out.println("👥 DEBUG: Empleados encontrados: " + empleadosDepartamento.size());
+        
+        // Agregar empleados a la tabla
+        for (Empleado empleado : empleadosDepartamento) {
+            System.out.println("   - " + empleado.getId() + ": " + empleado.getNombre() + " (" + empleado.getDepartamento() + ")");
+            modelo.addRow(new Object[]{
+                empleado.getId(),
+                empleado.getNombre(),
+                empleado.getDepartamento(),
+                "Activo"
+            });
+        }
+        
+        // Si no se encontraron empleados, mostrar mensaje informativo
+        if (empleadosDepartamento.isEmpty()) {
+            modelo.addRow(new Object[]{
+                "-", 
+                "No hay empleados en este departamento", 
+                departamentoActual, 
+                "Sin datos"
+            });
+            System.out.println("⚠️ DEBUG: No se encontraron empleados para el departamento: " + departamentoActual);
+        }
+    }
+    
+    // ===============================================
+    // MÉTODOS DE LÓGICA DE NEGOCIO POR ROL
+    // ===============================================
+    
+    /**
+     * Carga las tareas específicas del empleado autenticado
+     */
+    private void cargarTareasEmpleado(DefaultTableModel modelo) {
+        // Debug: Mostrar información del empleado actual
+        System.out.println("🔍 DEBUG: Cargando tareas para empleado: " + usuarioActual.getId() + " (" + usuarioActual.getNombre() + ")");
+        System.out.println("   Departamento: " + usuarioActual.getDepartamento());
+        
+        int tareasEncontradas = 0;
+        
+        // Filtrar solo las tareas asignadas al empleado actual
+        for (Tarea tarea : listaTareasDepartamento) {
+            // Verificar si la tarea está asignada al empleado actual
+            if (tarea.getEmpleadoAsignado() != null && 
+                tarea.getEmpleadoAsignado().equals(usuarioActual.getId()) &&
+                tarea.getDepartamento().equals(usuarioActual.getDepartamento())) {
+                
+                System.out.println("   ✅ Tarea asignada encontrada: " + tarea.getId() + " - " + tarea.getDescripcion());
+                tareasEncontradas++;
+                
+                int tiempoRestante = calcularTiempoRestante(tarea);
+                modelo.addRow(new Object[]{
+                    tarea.getId(),
+                    tarea.getDescripcion(),
+                    tarea.getUrgencia(),
+                    tarea.getHorasEstimadas() + " hrs",
+                    "Asignada",
+                    tiempoRestante + " hrs"
+                });
+            }
+        }
+        
+        System.out.println("📊 DEBUG: Total de tareas asignadas encontradas: " + tareasEncontradas);
+        
+        // Si no hay tareas asignadas, agregar una fila informativa
+        if (tareasEncontradas == 0) {
+            modelo.addRow(new Object[]{
+                "-", 
+                "No hay tareas asignadas actualmente", 
+                "-", 
+                "-", 
+                "Sin asignar", 
+                "-"
+            });
+            System.out.println("ℹ️ DEBUG: No se encontraron tareas asignadas al empleado");
+        }
+    }
+    
+    /**
+     * Completa una tarea (empleado)
+     */
+    private void completarTarea(String idTarea, String comentarios) {
+        if (idTarea.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el ID de la tarea", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Marcar tarea como pendiente de revisión
+        JOptionPane.showMessageDialog(this, 
+            "Tarea " + idTarea + " marcada como completada.\nPendiente de revisión por jefe de departamento.",
+            "Tarea Completada", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Crea nueva tarea para el departamento (jefe de departamento)
+     */
+    private void crearNuevaTareaDepartamento() {
+        String descripcion = JOptionPane.showInputDialog(this, "Descripción de la nueva tarea:");
+        if (descripcion != null && !descripcion.trim().isEmpty()) {
+            String urgencia = (String) JOptionPane.showInputDialog(this, "Nivel de urgencia:",
+                "Urgencia", JOptionPane.QUESTION_MESSAGE, null, 
+                new String[]{"Alta", "Media", "Baja"}, "Media");
+            
+            if (urgencia != null) {
+                // Generar ID automático
+                String id = "T" + (hashTareas.size() + 1);
+                
+                // Crear la tarea
+                Tarea nuevaTarea = new Tarea(id, descripcion, usuarioActual.getDepartamento(), urgencia);
+                
+                // Agregar a las estructuras
+                listaTareasDepartamento.add(nuevaTarea);
+                hashTareas.put(id, nuevaTarea);
+                
+                // Guardar en MongoDB
+                guardarTareaEnMongoDB(nuevaTarea, "departamento");
+                
+                // Actualizar todas las interfaces
+                actualizarTablasSegunRol();
+                
+                JOptionPane.showMessageDialog(this, "Tarea creada exitosamente: " + id,
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+    
+    /**
+     * Revisa tareas completadas por empleados (jefe de departamento)
+     */
+    private void revisarTareasCompletadas() {
+        JOptionPane.showMessageDialog(this, "Funcionalidad en desarrollo.\nAquí se mostrarán las tareas completadas pendientes de revisión.",
+            "Revisar Tareas", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Asigna una tarea existente a un empleado del departamento
+     */
+    private void asignarTareaAEmpleado() {
+        // Paso 1: Obtener todas las tareas del departamento sin asignar
+        java.util.List<Tarea> tareasDisponibles = new java.util.ArrayList<>();
+        
+        for (Tarea tarea : listaTareasDepartamento) {
+            if (tarea.getDepartamento().equals(usuarioActual.getDepartamento()) && 
+                (tarea.getEmpleadoAsignado() == null || tarea.getEmpleadoAsignado().isEmpty())) {
+                tareasDisponibles.add(tarea);
+            }
+        }
+        
+        if (tareasDisponibles.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "No hay tareas disponibles para asignar en el departamento " + usuarioActual.getDepartamento(),
+                "Sin Tareas", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Paso 2: Seleccionar tarea
+        String[] opcionesTareas = tareasDisponibles.stream()
+            .map(t -> t.getId() + " - " + t.getDescripcion())
+            .toArray(String[]::new);
+            
+        String tareaSeleccionada = (String) JOptionPane.showInputDialog(this,
+            "Seleccione la tarea a asignar:",
+            "Asignar Tarea - Seleccionar Tarea",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opcionesTareas,
+            opcionesTareas[0]);
+            
+        if (tareaSeleccionada == null) return;
+        
+        // Obtener el ID de la tarea seleccionada
+        String idTareaSeleccionada = tareaSeleccionada.split(" - ")[0];
+        
+        // Paso 3: Obtener empleados del departamento usando buscarPorDepartamento
+        java.util.List<Empleado> empleadosDepartamento = new java.util.ArrayList<>();
+        arbolEmpleados.buscarPorDepartamento(usuarioActual.getDepartamento(), empleadosDepartamento);
+        
+        if (empleadosDepartamento.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay empleados disponibles en el departamento " + usuarioActual.getDepartamento(),
+                "Sin Empleados", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Paso 4: Seleccionar empleado (todos los empleados del ArbolEmpleados son empleados regulares)
+        String[] opcionesEmpleados = empleadosDepartamento.stream()
+            .map(emp -> emp.getId() + " - " + emp.getNombre())
+            .toArray(String[]::new);
+            
+        String empleadoSeleccionado = (String) JOptionPane.showInputDialog(this,
+            "Seleccione el empleado para asignar la tarea:",
+            "Asignar Tarea - Seleccionar Empleado",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opcionesEmpleados,
+            opcionesEmpleados[0]);
+            
+        if (empleadoSeleccionado == null) return;
+        
+        // Obtener el ID del empleado seleccionado
+        String idEmpleadoSeleccionado = empleadoSeleccionado.split(" - ")[0];
+        
+        // Paso 5: Realizar la asignación
+        Tarea tareaAsignar = hashTareas.get(idTareaSeleccionada);
+        if (tareaAsignar != null) {
+            tareaAsignar.setEmpleadoAsignado(idEmpleadoSeleccionado);
+            
+            // Guardar cambios en MongoDB
+            actualizarTareaEnMongoDB(tareaAsignar);
+            
+            JOptionPane.showMessageDialog(this,
+                "Tarea asignada exitosamente:\n\n" +
+                "Tarea: " + tareaAsignar.getDescripcion() + "\n" +
+                "Empleado: " + empleadoSeleccionado + "\n" +
+                "Horas estimadas: " + tareaAsignar.getHorasEstimadas(),
+                "Asignación Exitosa",
+                JOptionPane.INFORMATION_MESSAGE);
+                
+            // Actualizar todas las interfaces automáticamente
+            actualizarTablasSegunRol();
+            
+            // Actualizar específicamente al empleado asignado
+            actualizarTablaEmpleado(idEmpleadoSeleccionado);
+        }
+    }
+    
+    /**
+     * Actualiza las tablas de un empleado específico cuando se le asigna una tarea
+     */
+    private void actualizarTablaEmpleado(String idEmpleado) {
+        // Si el usuario actual es el empleado que recibió la asignación
+        if (usuarioActual != null && idEmpleado.equals(usuarioActual.getId())) {
+            // Actualizar la tabla según el rol
+            if (usuarioActual.getRol() == Usuario.Rol.EMPLEADO) {
+                // Recargar las tareas para el empleado
+                cargarTareasEmpleado((DefaultTableModel) tablaLista.getModel());
+            }
+        }
+    }
+    
+    /**
+     * Muestra estadísticas generales del sistema (jefe)
+     */
+    private void mostrarEstadisticasGenerales() {
+        StringBuilder stats = new StringBuilder();
+        stats.append("=== ESTADÍSTICAS GENERALES ===\n\n");
+        stats.append("📚 Tareas Urgentes: ").append(pilaTareasUrgentes.size()).append("\n");
+        stats.append("⏰ Tareas Programadas: ").append(colaTareasProgramadas.size()).append("\n");
+        stats.append("🏢 Tareas Departamentales: ").append(listaTareasDepartamento.size()).append("\n");
+        stats.append("⭐ Tareas con Prioridad: ").append(colaPrioridad.size()).append("\n");
+        stats.append("👥 Total Empleados: ").append(arbolEmpleados.contarEmpleados()).append("\n\n");
+        
+        // Tiempo total estimado
+        int tiempoTotal = calcularTiempoTotalRecursivo(listaTareasDepartamento, 0) +
+                         calcularTiempoTotalRecursivo(pilaTareasUrgentes, 0) +
+                         calcularTiempoTotalRecursivo(colaTareasProgramadas, 0);
+        stats.append("⏱️ Tiempo Total Estimado: ").append(tiempoTotal).append(" horas\n");
+        
+        JOptionPane.showMessageDialog(this, stats.toString(), "Estadísticas del Sistema", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Abre filtros avanzados (jefe)
+     */
+    private void abrirFiltrosAvanzados() {
+        JOptionPane.showMessageDialog(this, "Funcionalidad de filtros avanzados en desarrollo.",
+            "Filtros Avanzados", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    // ==================== MÉTODOS AUXILIARES PARA MENÚS DEPARTAMENTALES ====================
+    
+    /**
+     * Crea panel especializado según el departamento del jefe
+     */
+    private JPanel crearPanelEspecializadoPorDepartamento() {
+        if (usuarioActual.getDepartamento() == null) return null;
+        
+        String dept = usuarioActual.getDepartamento().toLowerCase();
+        
+        if (dept.contains("desarrollo") || dept.contains("it") || dept.contains("tecnologia")) {
+            return crearPanelIT();
+        } else if (dept.contains("ventas") || dept.contains("comercial")) {
+            return crearPanelVentas();
+        } else if (dept.contains("marketing") || dept.contains("publicidad")) {
+            return crearPanelMarketing();
+        } else if (dept.contains("recursos") || dept.contains("rrhh")) {
+            return crearPanelRRHH();
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Obtiene el nombre del tab especializado
+     */
+    private String obtenerNombreTabEspecializado() {
+        if (usuarioActual.getDepartamento() == null) return "Especializado";
+        
+        String dept = usuarioActual.getDepartamento().toLowerCase();
+        
+        if (dept.contains("desarrollo") || dept.contains("it") || dept.contains("tecnologia")) {
+            return "Gestión IT";
+        } else if (dept.contains("ventas") || dept.contains("comercial")) {
+            return "Gestión Ventas";
+        } else if (dept.contains("marketing") || dept.contains("publicidad")) {
+            return "Campañas";
+        } else if (dept.contains("recursos") || dept.contains("rrhh")) {
+            return "Gestión RRHH";
+        }
+        
+        return "Especializado";
+    }
+    
+    /**
+     * Crea panel departamental para empleados
+     */
+    private JPanel crearPanelDepartamentalEmpleado() {
+        if (usuarioActual.getDepartamento() == null) return null;
+        
+        String dept = usuarioActual.getDepartamento().toLowerCase();
+        
+        if (dept.contains("desarrollo") || dept.contains("it") || dept.contains("tecnologia")) {
+            return crearPanelEmpleadoIT();
+        } else if (dept.contains("ventas") || dept.contains("comercial")) {
+            return crearPanelEmpleadoVentas();
+        } else if (dept.contains("marketing") || dept.contains("publicidad")) {
+            return crearPanelEmpleadoMarketing();
+        }
+        
+        return crearPanelEmpleadoGenerico();
+    }
+    
+    /**
+     * Obtiene nombre del tab departamental para empleados
+     */
+    private String obtenerNombreTabDepartamentalEmpleado() {
+        if (usuarioActual.getDepartamento() == null) return "Mi Departamento";
+        
+        String dept = usuarioActual.getDepartamento().toLowerCase();
+        
+        if (dept.contains("desarrollo") || dept.contains("it") || dept.contains("tecnologia")) {
+            return "Tareas IT";
+        } else if (dept.contains("ventas") || dept.contains("comercial")) {
+            return "Mis Clientes";
+        } else if (dept.contains("marketing") || dept.contains("publicidad")) {
+            return "Mis Campañas";
+        }
+        
+        return "Mi Departamento";
+    }
+    
+    // ==================== PANELES ESPECIALIZADOS ====================
+    
+    /**
+     * Panel especializado para departamento IT
+     */
+    private JPanel crearPanelIT() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Gestión IT - Proyectos y Mantenimiento"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "HERRAMIENTAS IT:\n\n" +
+            "• Gestión de proyectos de desarrollo\n" +
+            "• Mantenimiento de sistemas\n" +
+            "• Soporte técnico\n" +
+            "• Infraestructura y redes\n" +
+            "• Seguridad informática\n\n" +
+            "📊 Métricas IT:\n" +
+            "• Tiempo de respuesta\n" +
+            "• Uptime de sistemas\n" +
+            "• Resolución de tickets"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Panel especializado para departamento de Ventas
+     */
+    private JPanel crearPanelVentas() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Gestión de Ventas - CRM y Seguimiento"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "HERRAMIENTAS VENTAS:\n\n" +
+            "• Seguimiento de leads\n" +
+            "• Gestión de clientes\n" +
+            "• Reportes de ventas\n" +
+            "• Metas y objetivos\n" +
+            "• Pipeline de ventas\n\n" +
+            "📊 KPIs Ventas:\n" +
+            "• Conversión de leads\n" +
+            "• Ticket promedio\n" +
+            "• Retención de clientes"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Panel especializado para departamento de Marketing
+     */
+    private JPanel crearPanelMarketing() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Gestión Marketing - Campañas y Contenido"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "HERRAMIENTAS MARKETING:\n\n" +
+            "• Campañas publicitarias\n" +
+            "• Gestión de contenido\n" +
+            "• Redes sociales\n" +
+            "• Email marketing\n" +
+            "• Análisis de mercado\n\n" +
+            "📊 Métricas Marketing:\n" +
+            "• ROI de campañas\n" +
+            "• Engagement rate\n" +
+            "• Lead generation"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Panel especializado para RRHH
+     */
+    private JPanel crearPanelRRHH() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Gestión RRHH - Personal y Desarrollo"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "HERRAMIENTAS RRHH:\n\n" +
+            "• Gestión de personal\n" +
+            "• Evaluaciones de desempeño\n" +
+            "• Capacitaciones\n" +
+            "• Reclutamiento\n" +
+            "• Nómina y beneficios\n\n" +
+            "📊 Métricas RRHH:\n" +
+            "• Rotación de personal\n" +
+            "• Satisfacción laboral\n" +
+            "• Productividad por empleado"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    // ==================== PANELES PARA EMPLEADOS ====================
+    
+    /**
+     * Panel de tareas pendientes para empleados
+     */
+    private JPanel crearPanelTareasPendientes() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Mis Tareas Pendientes"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "TAREAS PENDIENTES:\n\n" +
+            "• Lista de tareas asignadas\n" +
+            "• Fechas límite\n" +
+            "• Prioridades\n" +
+            "• Estado de progreso\n\n" +
+            "Recordatorio:\n" +
+            "Mantén tus tareas actualizadas\n" +
+            "para un mejor seguimiento."
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        // Panel de botones para actualizar
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        JButton btnActualizarPendientes = crearBotonModerno("Actualizar Estado", new Color(70, 130, 180));
+        
+        btnActualizarPendientes.addActionListener(e -> 
+            JOptionPane.showMessageDialog(this, "Estado de tareas actualizado", "Actualización", JOptionPane.INFORMATION_MESSAGE));
+        
+        panelBotones.add(btnActualizarPendientes);
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        panel.add(panelBotones, BorderLayout.SOUTH);
+        return panel;
+    }
+    
+    /**
+     * Panel específico para empleados IT
+     */
+    private JPanel crearPanelEmpleadoIT() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Mis Tareas IT"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "MIS TAREAS IT:\n\n" +
+            "• Tickets de soporte\n" +
+            "• Desarrollo de funcionalidades\n" +
+            "• Mantenimiento de sistemas\n" +
+            "• Documentación técnica\n" +
+            "• Testing y QA\n\n" +
+            "📚 Recursos:\n" +
+            "• Base de conocimiento\n" +
+            "• Documentación API\n" +
+            "• Guías de procedimientos"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Panel específico para empleados de Ventas
+     */
+    private JPanel crearPanelEmpleadoVentas() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Mis Clientes y Ventas"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "MIS ACTIVIDADES VENTAS:\n\n" +
+            "• Llamadas programadas\n" +
+            "• Seguimiento de leads\n" +
+            "• Reuniones con clientes\n" +
+            "• Propuestas pendientes\n" +
+            "• Metas del mes\n\n" +
+            "📊 Mi Performance:\n" +
+            "• Ventas del mes\n" +
+            "• Clientes contactados\n" +
+            "• Conversiones logradas"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Panel específico para empleados de Marketing
+     */
+    private JPanel crearPanelEmpleadoMarketing() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("Mis Campañas"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "MIS ACTIVIDADES MARKETING:\n\n" +
+            "• Creación de contenido\n" +
+            "• Gestión de redes sociales\n" +
+            "• Campañas activas\n" +
+            "• Análisis de métricas\n" +
+            "• Diseño gráfico\n\n" +
+            "Mis Métricas:\n" +
+            "• Engagement generado\n" +
+            "• Contenido publicado\n" +
+            "• Leads generados"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    /**
+     * Panel genérico para empleados
+     */
+    private JPanel crearPanelEmpleadoGenerico() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new TitledBorder("📋 Mi Área de Trabajo"));
+        
+        JTextArea areaInfo = new JTextArea(
+            "💼 MI DEPARTAMENTO:\n\n" +
+            "• Tareas asignadas\n" +
+            "• Proyectos activos\n" +
+            "• Colaboraciones\n" +
+            "• Reportes pendientes\n" +
+            "• Comunicaciones internas\n\n" +
+            "📞 Contacto:\n" +
+            "• Jefe inmediato\n" +
+            "• Compañeros de equipo\n" +
+            "• Soporte interno"
+        );
+        areaInfo.setEditable(false);
+        areaInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        panel.add(new JScrollPane(areaInfo), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    // ==================== MENSAJES DE BIENVENIDA ====================
+    
+    /**
+     * Muestra mensaje de bienvenida para jefes de departamento
+     */
+    private void mostrarMensajeBienvenidaJefe() {
+        Timer timer = new Timer(2000, e -> {
+            String mensaje = String.format(
+                "¡Bienvenido %s!\n\n" +
+                "Como Jefe de %s tienes acceso a:\n" +
+                "• Gestión completa de tu departamento\n" +
+                "• Supervisión de tu equipo\n" +
+                "• Reportes y métricas específicas\n" +
+                "• Herramientas especializadas\n\n" +
+                "Explora las pestañas para gestionar eficientemente tu área.",
+                usuarioActual.getNombre(),
+                usuarioActual.getDepartamento()
+            );
+            
+            JOptionPane.showMessageDialog(this, mensaje, "Bienvenido Jefe de Departamento", JOptionPane.INFORMATION_MESSAGE);
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+    
+    /**
+     * Muestra mensaje de bienvenida para empleados
+     */
+    private void mostrarMensajeBienvenidaEmpleado() {
+        Timer timer = new Timer(2000, e -> {
+            String mensaje = String.format(
+                "¡Hola %s!\n\n" +
+                "Trabajas en: %s\n\n" +
+                "En tu área personal puedes:\n" +
+                "• Ver y gestionar tus tareas\n" +
+                "• Acceder a herramientas de tu departamento\n" +
+                "• Comunicarte con tu equipo\n" +
+                "• Seguir el progreso de tus proyectos\n\n" +
+                "¡Que tengas un día productivo!",
+                usuarioActual.getNombre(),
+                usuarioActual.getDepartamento()
+            );
+            
+            JOptionPane.showMessageDialog(this, mensaje, "Bienvenido al Sistema", JOptionPane.INFORMATION_MESSAGE);
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+    
+    /**
+     * Genera reporte completo (jefe)
+     */
+    private void generarReporteCompleto() {
+        JOptionPane.showMessageDialog(this, "Funcionalidad de reportes en desarrollo.",
+            "Generar Reporte", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Calcula tiempo restante estimado para una tarea
+     */
+    private int calcularTiempoRestante(Tarea tarea) {
+        // Implementación simple - en un sistema real se basaría en fechas
+        return tarea.getHorasEstimadas(); // Por ahora retorna las horas estimadas
+    }
 
     
 }

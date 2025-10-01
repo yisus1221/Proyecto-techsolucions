@@ -135,14 +135,6 @@ public class DatosPredeterminados {
                         .append("tipo", "urgente")
                         .append("prioridad", 1)
                         .append("fechaEntrega", "2025-09-30"),
-                new Document("id", "T7")
-                        .append("descripcion", "Auditoría de seguridad del sistema")
-                        .append("departamento", "Seguridad")
-                        .append("urgencia", "Crítica")
-                        .append("horasEstimadas", 12)
-                        .append("tipo", "urgente")
-                        .append("prioridad", 1)
-                        .append("fechaEntrega", "2025-09-23"),
                 new Document("id", "T8")
                         .append("descripcion", "Migración de datos legacy")
                         .append("departamento", "Desarrollo")
@@ -244,15 +236,6 @@ public class DatosPredeterminados {
                         .append("tipo", "programada")
                         .append("prioridad", 3)
                         .append("fechaEntrega", "2025-10-12"),
-                new Document("id", "T21")
-                        .append("descripcion", "Implementar autenticación de dos factores")
-                        .append("departamento", "Seguridad")
-                        .append("urgencia", "Crítica")
-                        .append("horasEstimadas", 10)
-                        .append("tipo", "urgente")
-                        .append("prioridad", 1)
-                        .append("fechaEntrega", "2025-09-25")
-                        .append("dependencias", Arrays.asList("T7")),
                 new Document("id", "T22")
                         .append("descripcion", "Evaluación de desempeño anual")
                         .append("departamento", "Recursos Humanos")
