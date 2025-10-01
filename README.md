@@ -484,13 +484,6 @@ SOFTWARE.
 ![Java](https://img.shields.io/badge/Java-17+-orange)
 ![Build](https://img.shields.io/badge/Build-Passing-success)
 
-### 🎯 **Próximas Mejoras**
-- 🔄 API REST para integración externa
-- 📱 Aplicación móvil complementaria
-- 📊 Dashboard analítico avanzado
-- 🤖 Inteligencia artificial para optimización de tareas
-- ☁️ Despliegue en cloud (AWS/Azure)
-
 ---
 
 <div align="center">
